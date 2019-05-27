@@ -57,7 +57,7 @@ export default {
     size: '布局大小'
   },
   login: {
-    title: '淘车乐系统登录',
+    title: '惠好车接口调试',
     logIn: '登录',
     username: '账号',
     password: '密码',

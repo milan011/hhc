@@ -12,8 +12,8 @@ use App\Http\Resources\User\UserResourceCollection;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Http\Requests\UserRequest;
 use Spatie\Permission\Models\Role;
-use Validator;
-
+use Validator;  
+        
 class UserController extends Controller
 {
 	private $userRepository;

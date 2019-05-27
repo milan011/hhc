@@ -53,7 +53,8 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          // console.log(response)
+          console.log(response)
+          // return false
           if(response.data.status){
             const data = response.data
             commit('SET_TOKEN', data.token)
@@ -85,6 +86,7 @@ const user = {
             reject('error')
           }
           const data = response.data
+          // const data = response.data
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
           } else {

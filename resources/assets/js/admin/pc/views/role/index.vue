@@ -74,7 +74,7 @@
 
 <script>
 
-import { fetchList, createRole, updateRole, deleteRole, getRolePermissions, getPermissions, giveRolePermissions } from '@adminPc/api/role'
+import { getRoleList, createRole, updateRole, deleteRole, getRolePermissions, getPermissions, giveRolePermissions } from '@adminPc/api/role'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 import SwitchRoles from './components/Permission'
@@ -160,7 +160,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      getRoleList(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.total
 

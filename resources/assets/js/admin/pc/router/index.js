@@ -91,8 +91,8 @@ export default new Router({
 
 export const asyncRouterMap = [
   //infoStatisticsRouter,
-  shopRouter,
-  noticeRouter,
+  /*shopRouter,
+  noticeRouter,*/
   userRouter,
   // inventoryRouter,
   // permissionRouter,

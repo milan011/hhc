@@ -24,7 +24,15 @@ class ShopResource extends Resource
             'remark' => $this->remark,       
             'created_at' => $this->created_at,       
         ];*/
-        return parent::toArray($request);
+
+        return [
+            'ResultType' => 0,
+            'Message'    =>"获取门店列表成功",
+            'LogMessage' => null,
+            'Data'       => parent::toArray($request),
+        ];
+        
+        // return parent::toArray($request);
     }
 
     /*public function with($request)

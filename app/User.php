@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $guard_name = 'api'; // 使用任何你想要的守卫
-    protected $table      = 'tcl_user';
+    protected $table      = 'smx_enterprise_user';
     protected $primaryKey ='id';
     protected $fillable = ['id', 'name', 'nick_name', 'password', 'telephone', 'phone', 'qq_number', 'wx_number', 'address', 'creater_id', 'shop_id', 'status', 'user_img', 'email'];
 

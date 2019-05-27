@@ -36,7 +36,8 @@ return [
          * 我们选择了一个基本的默认值，但您可以轻松将其更改为您喜欢的。
          */
 
-        'roles' => 'roles',
+        // 'roles' => 'roles',
+        'roles' => 'smx_enterprise_roles',
 
         /*
          * 当使用这个包中的 “HasRoles” 特性时，
@@ -44,7 +45,8 @@ return [
          * 我们选择了一个基本的默认值，但您可以轻松将其更改为您喜欢的任何表。
          */
 
-        'permissions' => 'permissions',
+        // 'permissions' => 'permissions',
+        'permissions' => 'smx_enterprise_permissions',
 
         /*
          * 
@@ -54,6 +56,7 @@ return [
          * 
          */
 
+        // 'model_has_permissions' => 'model_has_permissions',
         'model_has_permissions' => 'model_has_permissions',
 
         /*
@@ -62,7 +65,8 @@ return [
          * 我们选择了一个基本的默认值，但您可以轻松将其更改为您喜欢的任何表。
          */
 
-        'model_has_roles' => 'model_has_roles',
+        // 'model_has_roles' => 'model_has_roles',
+        'model_has_roles' => 'smx_enterprise_userrolerelation',
 
         /*
          * 当使用这个包中的 “HasRoles” 特性时，
@@ -70,7 +74,8 @@ return [
          * 我们选择了一个基本的默认值，但您可以轻松将其更改为您喜欢的任何表。
          */
 
-        'role_has_permissions' => 'role_has_permissions',
+        // 'role_has_permissions' => 'role_has_permissions',
+        'role_has_permissions' => 'smx_enterprise_rolepermrelation',
     ],
 
     /*

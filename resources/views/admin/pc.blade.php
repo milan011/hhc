@@ -8,7 +8,7 @@
 	<meta http-equiv="Expires" content="0" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="{{ mix('/css/appPc.css') }}">
-    <title>淘车乐信息管理系统</title>
+    <title>惠好车接口</title>
 
 </head>
 <body>

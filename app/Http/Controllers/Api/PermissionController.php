@@ -23,13 +23,14 @@ class PermissionController extends Controller
      */
     public function index(Request $request)
     {
+        // dd($request->all());
         $permissions = Permission::where('status', '1')
                                  ->orderBy('created_at', 'DESC')
                                  ->paginate(10);
 
-        // return new UserResource($users);
+        return new PermissionResource($permissions);
 
-        return $permissions;
+        // return $permissions;
     }
 
     /**

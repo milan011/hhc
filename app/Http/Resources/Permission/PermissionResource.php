@@ -14,18 +14,12 @@ class PermissionResource extends Resource
      */
     public function toArray($request)
     {
-        /*dd($this);
-        foreach ($this as $key => $value) {
-            dd($key);
-        }*/
-
-        /*return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'roles' => ['admin', 'editer'],
-            'avatar' => 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-            'introduction' => '我是超级管理员',
-        ];*/
-        return parent::toArray($request);
+        return [
+            'ResultType' => 0,
+            'Message'    =>"获取权限列表成功",
+            'LogMessage' => null,
+            'Data'       => parent::toArray($request),
+        ];
+        // return parent::toArray($request);
     }
 }

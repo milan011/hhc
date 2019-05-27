@@ -4,7 +4,7 @@ import { ROAST_CONFIG } from '../config.js'
 
 let token = getToken()
 
-export function fetchList(query, token = getToken()) {
+export function getRoleList(query, token = getToken()) {
   return request({
     // url: '/user/list',
     url: ROAST_CONFIG.API_URL + '/roleList',
