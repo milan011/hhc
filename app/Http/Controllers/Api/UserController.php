@@ -41,10 +41,16 @@ class UserController extends Controller
                      ->where('status', '1')
                      ->orderBy('created_at', 'DESC')
                      ->paginate(10);
+        // dd($users);
+        $data = [
+            'ResultType' => 0,
+            'Message'    =>"获取用户列表成功",
+            'LogMessage' => null,
+            'Data'       => $users,
+        ];             
 
-        // return new UserResource($users);
-
-        return $users;
+        // return new userResource($data);
+        return $data;
     }
 
     /**

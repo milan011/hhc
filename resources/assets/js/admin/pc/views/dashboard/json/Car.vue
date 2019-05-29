@@ -149,6 +149,7 @@
   //import { getInfo } from '@/api/infoSelf'
   //import { parseTime } from '@/utils'
   //import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@/config.js'
+  import { TOKEN } from '@adminPc/tokenConfig.js'
   export default {
     name: 'Car',
     data() {

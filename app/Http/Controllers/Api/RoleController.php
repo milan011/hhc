@@ -8,6 +8,7 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use App\Http\Resources\Role\RoleResource;
 
 class RoleController extends Controller
 {
@@ -27,9 +28,7 @@ class RoleController extends Controller
                                  ->orderBy('created_at', 'DESC')
                                  ->paginate(10);
 
-        // return new UserResource($users);
-
-        return $role;
+        return new RoleResource($role);
     }
 
     /**
@@ -42,10 +41,27 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        
-        $data = $request->except(['token']);
 
-        return Role::create($data);
+        // 提交数据格式
+        /*$data = [
+            "name" => '角色名称'
+            "guard_name" => 'api'
+            "description" => '角色描述'
+            "token" => ''
+        ]*/
+        
+        /*$data = $request->except(['token']);
+        $newRole = Role::create($data);*/
+
+        $role = Role::findOrFail(12);
+
+        if($role){ //添加成功
+            return $this->baseSucceed($Data = $role, $Message = '添加角色成功');
+        }else{  //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
+
+        // return Role::create($data);
     }
 
     /**
@@ -61,13 +77,23 @@ class RoleController extends Controller
         // dd(Role::findOrFail($id));
         $data = $request->except(['token']);
 
+        // 提交数据格式
+        /*$data = [
+            "id" => 12,
+            "name" => '角色名称'
+            "guard_name" => 'api'
+            "description" => '角色描述'
+            "token" => ''
+        ]*/
+
         $role = Role::findOrFail($id)->update($data);
+        $role = Role::findOrFail($id);
 
-        return response([
-                'status' => 'success'
-            ]);
-
-        // return $role;
+        if($role){ //添加成功
+            return $this->baseSucceed($Data = $role, $Message = '修改角色成功');
+        }else{  //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -85,9 +111,11 @@ class RoleController extends Controller
         $role->status = '0';
         $role->save();
 
-        return response([
-            'status' => 'success'
-        ]);        
+        if($role){ //添加成功
+            return $this->baseSucceed($Data = $role, $Message = '删除角色成功');
+        }else{  //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }       
     }
 
     // 获取角色权限列表
@@ -103,7 +131,11 @@ class RoleController extends Controller
         }
         // dd($list);
         
-        return $list;
+        if($list){ //添加成功
+            return $this->baseSucceed($Data = $list, $Message = '获取角色权限列表');
+        }else{  //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     // 编辑角色权限列表
@@ -117,8 +149,10 @@ class RoleController extends Controller
         $role->syncPermissions($permissions);
 
 
-        return response([
-            'status' => 'success'
-        ]); 
+        if($role){ //添加成功
+            return $this->baseSucceed($Data = $role, $Message = '赋予角色权限成功');
+        }else{  //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 }

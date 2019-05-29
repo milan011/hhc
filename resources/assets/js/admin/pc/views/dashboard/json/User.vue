@@ -70,7 +70,8 @@
     </div>
 </template>
 <script>
-  //import { getInfo } from '@/api/infoSelf'
+  import { fetchList, fetchPv, createUser, updateUser, deleteUser, passReset } from '@adminPc/api/user'
+  import { TOKEN } from '@adminPc/tokenConfig.js'
   //import { parseTime } from '@/utils'
   //import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@/config.js'
   export default {
@@ -85,10 +86,26 @@
     },
     methods: {
       userListCommit(){
-        alert('用户列表提交Json')
+        const listQuery = {
+            token: TOKEN,
+            page: 1,
+        }
+        this.$emit("showJson", listQuery)
+        this.$emit("showDialog", true)
       },
       userListReturn(){
-        alert('用户列表返回Json')
+        const listQuery = {
+            token: TOKEN,
+            page: 3,
+        }
+        fetchList(listQuery).then(response => {
+            console.log(response.data)
+            // return false
+            const userList = response.data
+    
+            this.$emit("showJson", userList)
+            this.$emit("showDialog", true)
+        })
       },
       userAddCommit(){
         alert('用户添加提交Json')

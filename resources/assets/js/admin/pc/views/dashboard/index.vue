@@ -16,7 +16,13 @@
           </role-permission>
         </el-tab-pane>
         <el-tab-pane label="用户管理" name="second">
-            <user></user>                                 
+            <user
+                v-on:formatJs="formatJson"
+                v-bind:dialogVisible="this.dialogVisible" 
+                v-on:showDialog="showDialog($event)"
+                v-bind:rInfo="this.rInfo"
+                v-on:showJson="showJson($event)">
+            </user>                                 
         </el-tab-pane>
         <el-tab-pane label="门店管理" name="third">
             <shop></shop>  
@@ -89,7 +95,7 @@ export default {
         currentRole: 'adminDashboard',
         dialogVisible: false,
         rInfo:'反正我告诉你了',
-        activeName: 'first'
+        activeName: 'second'
       }
     },
     computed: {

@@ -29,8 +29,8 @@ trait BaseResponseTrait
         return $this->respond($ResultType, $Data, $Message, $LogMessage);
     }
 
-    public function baseFailed($message = 'Request failed!', $respond_data = [], $status = false)
+    public function baseFailed($Message = 'Request failed!', $Data = [], $ResultType = 1, $LogMessage = null)
     {
-        return $this->respond($status, $respond_data, $message);
+        return $this->respond($ResultType, $Data, $Message);
     }
 }

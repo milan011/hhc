@@ -16,7 +16,7 @@ class Shop extends Model
      * @var string
      */
     // protected $table = 'users';
-    protected $table = 'tcl_shop';
+    protected $table = 'smx_enterprise_shop';
     protected $primaryKey ='id';
 
     /**

@@ -16,7 +16,7 @@ class Notice extends Model
      * @var string
      */
     // protected $table = 'users';
-    protected $table = 'tcl_notice';
+    protected $table = 'smx_resource_notice';
     protected $primaryKey ='id';
 
     /**
