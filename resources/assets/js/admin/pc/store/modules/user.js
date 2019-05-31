@@ -53,7 +53,7 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          console.log(response)
+          // console.log(response)
           // return false
           if(response.data.status){
             const data = response.data

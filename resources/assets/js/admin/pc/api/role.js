@@ -13,6 +13,15 @@ export function getRoleList(query, token = getToken()) {
   })
 }
 
+export function allRolesList(query, token = getToken()) {
+  return request({
+    // url: '/user/list',
+    url: ROAST_CONFIG.API_URL + '/allRolesList',
+    method: 'get',
+    params: {query, token}
+  })
+}
+
 export function createRole(data, token = getToken()) {
   return request({
     url: ROAST_CONFIG.API_URL + '/role',

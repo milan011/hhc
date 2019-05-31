@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Notice extends Model
 {
     use SoftDeletes; //使用软删除
-    
+
     /**
      * The database table used by the model.
      * 定义模型对应数据表及主键
@@ -16,8 +16,8 @@ class Notice extends Model
      * @var string
      */
     // protected $table = 'users';
-    protected $table = 'smx_resource_notice';
-    protected $primaryKey ='id';
+    protected $table      = 'smx_enterprise_notice';
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +31,7 @@ class Notice extends Model
      * //在模型数组或 JSON 显示中隐藏某些属性
      * @var array
      */
-    protected $hidden = [   
+    protected $hidden = [
         'password', 'remember_token',
     ];
 
@@ -43,8 +43,9 @@ class Notice extends Model
     protected $dates = ['deleted_at'];
 
     // 定义User表与Notice表一对多关系
-    public function belongsToUser(){
+    public function belongsToUser()
+    {
 
-      return $this->belongsTo('App\User', 'user_id', 'id');
+        return $this->belongsTo('App\User', 'user_id', 'id');
     }
 }

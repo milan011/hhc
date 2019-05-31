@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 // use App\ShopPrice;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use App\Repositories\Shop\ShopRepositoryInterface;
 use App\Http\Resources\Shop\ShopResource;
 use App\Http\Resources\Shop\ShopResourceCollection;
+use App\Repositories\Shop\ShopRepositoryInterface;
+use Illuminate\Http\Request;
+
 //use App\Http\Requests\Shop\UpdateShopRequest;
 //use App\Http\Requests\Package\StorePackageRequest;
 
@@ -20,7 +21,7 @@ class ShopController extends Controller
 
         ShopRepositoryInterface $shop
     ) {
-    
+
         $this->shop = $shop;
         // $this->middleware('brand.create', ['only' => ['create']]);
     }
@@ -46,7 +47,7 @@ class ShopController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function shopAll(Request $request)
-    {  
+    {
         $shops = $this->shop->getShops();
 
         return new ShopResource($shops);
@@ -71,18 +72,21 @@ class ShopController extends Controller
     public function store(Request $shopRequest)
     {
         // dd($shopRequest->all());
-        if($this->shop->isRepeat($shopRequest)){
-            return $this->baseFailed($message = '该门店已存在');
+        if ($this->shop->isRepeat($shopRequest)) {
+            // dd('呵呵');
+            return $this->baseFailed($Message = '门店名称重复');
         }
 
         $new_shop = $this->shop->create($shopRequest);
         $new_shop->belongsToCreater;
 
-        if($new_shop){ //添加成功
-            return $this->baseSucceed($respond_data = $new_shop, $message = '添加成功');
-        }else{  //添加失败
-            return $this->baseFailed($message = '内部错误');
-        }   
+        if ($new_shop) {
+            //添加成功
+            return $this->baseSucceed($Data = $new_shop, $Message = '添加门店');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -126,13 +130,19 @@ class ShopController extends Controller
     {
         // dd($shopRequest->all());
         $update_shop = $this->shop->isRepeat($shopRequest);
-        if($update_shop && ($update_shop->id != $id)){
-            return $this->baseFailed($message = '您修改后的门店信息与现有门店冲突');
+        if ($update_shop && ($update_shop->id != $id)) {
+            return $this->baseFailed($Message = '您修改后的门店信息与现有门店冲突');
         }
         $shop = $this->shop->update($shopRequest, $id);
         $shop->belongsToCity;
         // dd(redirect()->route('shop.index'));
-        return $this->baseSucceed($respond_data = $shop, $message = '修改成功');
+        if ($shop) {
+            //添加成功
+            return $this->baseSucceed($Data = $shop, $Message = '修改门店成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -142,10 +152,16 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
+    {
         // dd('删了');
-        $this->shop->destroy($id);        
-        return $this->baseSucceed($message = '修改成功');
+        $shop = $this->shop->destroy($id);
+        if ($shop) {
+            //添加成功
+            return $this->baseSucceed($Data = $shop, $Message = '删除门店成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
 }

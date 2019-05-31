@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Session;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Http\Resources\Notice\NoticeResource;
+use App\Http\Resources\Notice\NoticeResourceCollection;
 // use App\Http\Requests\Notice\UpdateNoticeRequest;
 // use App\Http\Requests\Notice\StoreNoticeRequest;
 // use App\Repositories\Notice\NoticeRepositoryContract;
 
-
 use App\Repositories\Notice\NoticeRepositoryInterface;
-use App\Http\Resources\Notice\NoticeResource;
-use App\Http\Resources\Notice\NoticeResourceCollection;
+use Illuminate\Http\Request;
+use Session;
 
 class NoticeController extends Controller
 {
@@ -22,7 +21,7 @@ class NoticeController extends Controller
     public function __construct(
         NoticeRepositoryInterface $notice
     ) {
-    
+
         $this->notice = $notice;
         // $this->middleware('notice.create', ['only' => ['create']]);
     }
@@ -56,15 +55,17 @@ class NoticeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $noticeRequest)
-    {   
+    {
         // dd($noticeRequest->all());
         $new_notice = $this->notice->create($noticeRequest);
         $new_notice->belongsToUser;
-        
-        if($new_notice){ //添加成功
-            return $this->baseSucceed($respond_data = $new_notice, $message = '添加成功');
-        }else{  //添加失败
-            return $this->baseFailed($message = '内部错误');
+
+        if ($new_notice) {
+            //添加成功
+            return $this->baseSucceed($Data = $new_notice, $Message = '添加公告成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
         }
     }
 
@@ -79,10 +80,13 @@ class NoticeController extends Controller
         $notice_info = $this->notice->find($id);
         // dd(lastSql());
         // dd($notice_info);exit;
-        return view('admin.notice.show', compact(
-
-            'notice_info'
-        ));
+        if ($notice_info) {
+            //添加成功
+            return $this->baseSucceed($Data = $notice_info, $Message = '添加公告成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -109,11 +113,17 @@ class NoticeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateNoticeRequest $noticeRequest, $id)
+    public function update(Request $noticeRequest, $id)
     {
         // dd($noticeRequest->all());
-        $this->notice->update($noticeRequest, $id);
-        return redirect()->route('admin.notice.index');
+        $notice = $this->notice->update($noticeRequest, $id);
+        if ($notice) {
+            //添加成功
+            return $this->baseSucceed($Data = $notice, $Message = '添加公告成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -125,7 +135,13 @@ class NoticeController extends Controller
     public function destroy($id)
     {
         // dd($id);
-        $this->notice->destroy($id);        
-        return redirect()->route('admin.notice.index');
+        $notice = $this->notice->destroy($id);
+        if ($notice) {
+            //添加成功
+            return $this->baseSucceed($Data = $notice, $Message = '删除门店成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 }

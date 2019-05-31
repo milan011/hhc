@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CommentRequest extends FormRequest
 {
@@ -24,7 +26,17 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => 'required'
+            'content' => 'required',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw (new HttpResponseException(response()->json([
+            'ResultType' => 1,
+            'Data'       => $validator->errors(),
+            'Message'    => '表单验证失败',
+            'LogMessage' => null,
+        ], 200)));
     }
 }

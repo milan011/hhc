@@ -11,15 +11,15 @@ use Illuminate\Http\Request;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 /*Route::middleware('jwt.auth')->get('/user', function (Request $request) {
-    return $request->user();
+return $request->user();
 });*/
 
 Route::group([
     'middleware' => ['jwt.auth'],
-    'namespace' => 'Api',
+    'namespace'  => 'Api',
 ], function () {
     // User
     Route::get('getUserInfo', 'UserController@getUser');
@@ -43,6 +43,7 @@ Route::group([
 
     //Role
     Route::get('roleList', 'RoleController@index');
+    Route::get('allRolesList', 'RoleController@allRoles');
     Route::post('role', 'RoleController@store');
     Route::put('role/{id}', 'RoleController@update');
     Route::delete('role/{id}', 'RoleController@destroy');
@@ -84,7 +85,7 @@ Route::group([
     Route::delete('infoDianxin/{id}', 'InfoDianxinController@destroy');
 
     Route::get('infoDianxin/chormeBroswerDown', 'InfoDianxinController@chormeBroswerDown');
-    
+
     //Shop
     Route::get('shopList', 'ShopController@index');
     Route::get('shopAll', 'ShopController@shopAll'); //所有门店列表,无分页
@@ -97,7 +98,7 @@ Route::group([
     Route::get('noticeList', 'NoticeController@index');
     Route::get('noticeAll', 'NoticeController@noticeAll'); //所有公告列表,无分页
     Route::post('notice', 'NoticeController@store');
-    Route::get('getNoticeInfo/{id}', 'NoticeController@getInfo');
+    Route::get('getNotice/{id}', 'NoticeController@show');
     Route::put('notice/{id}', 'NoticeController@update');
     Route::delete('notice/{id}', 'NoticeController@destroy');
 
@@ -134,42 +135,40 @@ Route::group([
     Route::get('all_roles', 'RolesController@allRoles');
     Route::delete('roles/{role}', 'RolesController@destroy');*/
     /*
-    Route::post('user', 'UserController@store');
-    Route::get('user/{id}/edit', 'UserController@edit');
-    Route::put('user/{id}', 'UserController@update');
-    Route::delete('user/{id}', 'UserController@destroy');
-    Route::post('/user/{id}/status', 'UserController@status');
+Route::post('user', 'UserController@store');
+Route::get('user/{id}/edit', 'UserController@edit');
+Route::put('user/{id}', 'UserController@update');
+Route::delete('user/{id}', 'UserController@destroy');
+Route::post('/user/{id}/status', 'UserController@status');
 
-    // Article
-    Route::get('article', 'ArticleController@index')->name('api.article.index')->middleware(['permission:list_article']);
-    Route::post('article', 'ArticleController@store')->name('api.article.store')->middleware(['permission:create_article']);
-    Route::get('article/{id}/edit', 'ArticleController@edit')->name('api.article.edit')->middleware(['permission:update_article']);
-    Route::put('article/{id}', 'ArticleController@update')->name('api.article.update')->middleware(['permission:update_article']);
-    Route::delete('article/{id}', 'ArticleController@destroy')->name('api.article.destroy')->middleware(['permission:destroy_article']);*/
+// Article
+Route::get('article', 'ArticleController@index')->name('api.article.index')->middleware(['permission:list_article']);
+Route::post('article', 'ArticleController@store')->name('api.article.store')->middleware(['permission:create_article']);
+Route::get('article/{id}/edit', 'ArticleController@edit')->name('api.article.edit')->middleware(['permission:update_article']);
+Route::put('article/{id}', 'ArticleController@update')->name('api.article.update')->middleware(['permission:update_article']);
+Route::delete('article/{id}', 'ArticleController@destroy')->name('api.article.destroy')->middleware(['permission:destroy_article']);*/
 
-    
 });
 
 /*Route::group([
-    'namespace' => 'Api',
+'namespace' => 'Api',
 ], function () {
-    // File Upload
-    Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');
-    // Edit Avatar
-    Route::post('crop/avatar', 'UserController@cropAvatar')->middleware('auth:api');
+// File Upload
+Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');
+// Edit Avatar
+Route::post('crop/avatar', 'UserController@cropAvatar')->middleware('auth:api');
 
-    // Comment
-    Route::get('commentable/{commentableId}/comment', 'CommentController@show')->middleware('api');
-    Route::post('comments', 'CommentController@store')->middleware('auth:api');
-    Route::delete('comments/{id}', 'CommentController@destroy')->middleware('auth:api');
-    Route::post('comments/vote/{type}', 'MeController@postVoteComment')->middleware('auth:api');
-    Route::get('tags', 'TagController@getList');
+// Comment
+Route::get('commentable/{commentableId}/comment', 'CommentController@show')->middleware('api');
+Route::post('comments', 'CommentController@store')->middleware('auth:api');
+Route::delete('comments/{id}', 'CommentController@destroy')->middleware('auth:api');
+Route::post('comments/vote/{type}', 'MeController@postVoteComment')->middleware('auth:api');
+Route::get('tags', 'TagController@getList');
 });*/
 
-
-Route::group(['middleware' => 'jwt.auth' ,'namespace' => 'Auth'], function(){
-  Route::get('auth/getUser', 'LoginController@getUser');
+Route::group(['middleware' => 'jwt.auth', 'namespace' => 'Auth'], function () {
+    Route::get('auth/getUser', 'LoginController@getUser');
 });
-Route::group(['middleware' => 'jwt.refresh'], function(){
-  Route::get('auth/userRefresh', 'LoginController@userRefresh');
+Route::group(['middleware' => 'jwt.refresh'], function () {
+    Route::get('auth/userRefresh', 'LoginController@userRefresh');
 });

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use Auth;
-use App\User;
-
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Role\RoleResource;
+use App\User;
+use Auth;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use App\Http\Resources\Role\RoleResource;
 
 class RoleController extends Controller
 {
-    public function __construct(){
-    
+    public function __construct()
+    {
+
     }
 
     /**
@@ -25,10 +25,19 @@ class RoleController extends Controller
     {
         // p($request->input('query'));
         $role = Role::where('status', '1')
-                                 ->orderBy('created_at', 'DESC')
-                                 ->paginate(10);
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
 
         return new RoleResource($role);
+    }
+
+    public function allRoles()
+    {
+        $roles = Role::where('status', '1')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return new RoleResource($roles);
     }
 
     /**
@@ -44,20 +53,22 @@ class RoleController extends Controller
 
         // 提交数据格式
         /*$data = [
-            "name" => '角色名称'
-            "guard_name" => 'api'
-            "description" => '角色描述'
-            "token" => ''
+        "name" => '角色名称'
+        "guard_name" => 'api'
+        "description" => '角色描述'
+        "token" => ''
         ]*/
-        
+
         /*$data = $request->except(['token']);
         $newRole = Role::create($data);*/
 
         $role = Role::findOrFail(12);
 
-        if($role){ //添加成功
+        if ($role) {
+            //添加成功
             return $this->baseSucceed($Data = $role, $Message = '添加角色成功');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($Message = '内部错误');
         }
 
@@ -79,19 +90,21 @@ class RoleController extends Controller
 
         // 提交数据格式
         /*$data = [
-            "id" => 12,
-            "name" => '角色名称'
-            "guard_name" => 'api'
-            "description" => '角色描述'
-            "token" => ''
+        "id" => 12,
+        "name" => '角色名称'
+        "guard_name" => 'api'
+        "description" => '角色描述'
+        "token" => ''
         ]*/
 
         $role = Role::findOrFail($id)->update($data);
         $role = Role::findOrFail($id);
 
-        if($role){ //添加成功
+        if ($role) {
+            //添加成功
             return $this->baseSucceed($Data = $role, $Message = '修改角色成功');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($Message = '内部错误');
         }
     }
@@ -106,23 +119,25 @@ class RoleController extends Controller
     public function destroy($id)
     {
 
-        // throw new \App\ApiExceptions\ApiException('添加失败'); 
-        $role = Role::findOrFail($id);
+        // throw new \App\ApiExceptions\ApiException('添加失败');
+        $role         = Role::findOrFail($id);
         $role->status = '0';
         $role->save();
 
-        if($role){ //添加成功
+        if ($role) {
+            //添加成功
             return $this->baseSucceed($Data = $role, $Message = '删除角色成功');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($Message = '内部错误');
-        }       
+        }
     }
 
     // 获取角色权限列表
     public function getRolePermissions($id)
-    {   
+    {
 
-        $role = Role::findOrFail($id);
+        $role        = Role::findOrFail($id);
         $permissions = $role->permissions()->get();
 
         $list = [];
@@ -130,10 +145,12 @@ class RoleController extends Controller
             $list[] = $value->name;
         }
         // dd($list);
-        
-        if($list){ //添加成功
+
+        if ($list) {
+            //添加成功
             return $this->baseSucceed($Data = $list, $Message = '获取角色权限列表');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($Message = '内部错误');
         }
     }
@@ -141,17 +158,18 @@ class RoleController extends Controller
     // 编辑角色权限列表
     public function giveRolePermissions($id, Request $request)
     {
-        
-        $role = Role::findOrFail($id);
+
+        $role        = Role::findOrFail($id);
         $permissions = $request->post('permissions');
         /*p($role);
         dd($permissions);*/
         $role->syncPermissions($permissions);
 
-
-        if($role){ //添加成功
+        if ($role) {
+            //添加成功
             return $this->baseSucceed($Data = $role, $Message = '赋予角色权限成功');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($Message = '内部错误');
         }
     }

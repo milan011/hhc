@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use Auth;
-use App\User;
-
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\User\UserResource;
-use App\Http\Resources\User\UserResourceCollection;
-use App\Repositories\User\UserRepositoryInterface;
 use App\Http\Requests\UserRequest;
-use Spatie\Permission\Models\Role;
-use Validator;  
-        
+use App\Http\Resources\User\UserResource;
+use App\Repositories\User\UserRepositoryInterface;
+use App\User;
+use Auth;
+use Illuminate\Http\Request;
+use Validator;
+
 class UserController extends Controller
 {
-	private $userRepository;
+    private $userRepository;
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
-    	
 
         // parent::__construct();
         $this->userRepository = $userRepository;
-		// $this->middleware('passport-administrators');
+        // $this->middleware('passport-administrators');
         // $this->middleware('auth:api');
     }
 
@@ -37,17 +33,17 @@ class UserController extends Controller
     {
 
         $users = User::with('belongsToShop')
-                     ->where('id', '!=', '1')
-                     ->where('status', '1')
-                     ->orderBy('created_at', 'DESC')
-                     ->paginate(10);
+            ->where('id', '!=', '1')
+            ->where('status', '1')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
         // dd($users);
         $data = [
             'ResultType' => 0,
-            'Message'    =>"获取用户列表成功",
+            'Message'    => "获取用户列表成功",
             'LogMessage' => null,
             'Data'       => $users,
-        ];             
+        ];
 
         // return new userResource($data);
         return $data;
@@ -64,7 +60,8 @@ class UserController extends Controller
         // dd($users);
         // dd($users);$user->hasRole('writer');
 
-        $usersSalers = $users->filter(function ($value, $key) { //只获取销售顾问
+        $usersSalers = $users->filter(function ($value, $key) {
+            //只获取销售顾问
 
             return $value->hasRole('saler');
         });
@@ -84,19 +81,20 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUser(Request $request){
+    public function getUser(Request $request)
+    {
 
         $user = User::find(Auth::user()->id);
-        
+
         // $result = new UserResource($user);
         UserResource::withoutWrapping();
-        
+
         return new UserResource($user);
 
         /*return response([
-                'status' => 'success',
-                'data' => $user
-            ]);*/
+    'status' => 'success',
+    'data' => $user
+    ]);*/
     }
 
     /**
@@ -118,31 +116,33 @@ class UserController extends Controller
      * @param User $user
      * @return Response
      */
-    public function store(UserRequest $userRequest) {
+    public function store(UserRequest $userRequest)
+    {
         // dd('hehe');
         // dd($userRequest->all());
 
         // return $this->baseSucceed($respond_data = '', $message = '操作成功');
         $user = $this->userRepository->create($userRequest);
 
-        if($user){ //添加成功
+        if ($user) {
+            //添加成功
 
-            return $this->baseSucceed($respond_data = $user, $message = '添加成功');
+            return $this->baseSucceed($Data = $user, $Message = '添加成功');
             /*return $this->respond([
-                'status'  => true, 
-                'data'    => $user, 
-                'message' => '添加成功',
-            ]);*/
-        }else{  //添加失败
-            return $this->baseFailed($message = '内部错误');
+        'status'  => true,
+        'data'    => $user,
+        'message' => '添加成功',
+        ]);*/
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
             /*return $this->respond([
-                'status'  => false, 
-                'data'    => '', 
-                'message' => '添加失败',
-            ]);*/
+        'status'  => false,
+        'data'    => '',
+        'message' => '添加失败',
+        ]);*/
         }
-        
-        
+
         // return redirect()->route('user.index');
     }
 
@@ -154,12 +154,19 @@ class UserController extends Controller
      *
      * @return JsonResponse
      */
-    public function update($id, Request $request)
+    public function update($id, UserRequest $request)
     {
         // dd($request->all());
         $user = $this->userRepository->update($id, $request);
+        $user->belongsToShop;
 
-        return $this->baseSucceed($respond_data = $user, $message = '修改成功');
+        if ($user) {
+            //添加成功
+            return $this->baseSucceed($Data = $user, $Message = '修改角色成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -172,30 +179,34 @@ class UserController extends Controller
     public function destroy($id)
     {
 
-        // throw new \App\ApiExceptions\ApiException('添加失败'); 
+        // throw new \App\ApiExceptions\ApiException('添加失败');
         if ($id == 1) {
             return response()->json(['error' => '超级管理员不允许删除', 'status' => 0]);
-        }else{
-            $user = User::findOrFail($id);
+        } else {
+            $user         = User::findOrFail($id);
             $user->status = '0';
             $user->save();
 
-            return response([
-                'status' => 'success'
-            ]);  
-        }              
+            if ($user) {
+                //添加成功
+                return $this->baseSucceed($Data = $user, $Message = '删除用户成功');
+            } else {
+                //添加失败
+                return $this->baseFailed($Message = '内部错误');
+            }
+        }
     }
 
     // 获取用户角色列表
     public function getUserRoles($id)
-    {   
-        $user = $this->userRepository->find($id);
+    {
+        $user  = $this->userRepository->find($id);
         $roles = $user->getRoleNames();
         // dd(lastSql());
         /*dd($user);
         dd($roles);*/
         // $permissions = $user->getAllPermissions();
-        
+
         // $role = Role::findOrFail(2);
         //$users = User::role('admin')->get();
         // dd($role);
@@ -210,16 +221,19 @@ class UserController extends Controller
     public function giveUserRoles($id, Request $request)
     {
         // dd($request->all());
-        $user = User::findOrFail($id);
+        $user  = User::findOrFail($id);
         $roles = $request->post('roles');
         /*p($user);
-        dd($permissions);*/
+        dd($roles);*/
         $user->syncRoles($roles);
 
-
-        return response([
-            'status' => 'success'
-        ]); 
+        if ($user) {
+            //添加成功
+            return $this->baseSucceed($Data = $user, $Message = '赋予用户角色成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     //重置密码
@@ -228,56 +242,58 @@ class UserController extends Controller
         // p($request->all());exit;
         $user = $this->userRepository->find($request->id);
         // dd($user);
-        
+
         $user->password = bcrypt('123465');
         $user->save();
 
-        return response([
-            'status' => 'success'
-        ]);
+        if ($user) {
+            //添加成功
+            return $this->baseSucceed($Data = $user, $Message = '赋予用户角色成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     // 修改密码
     public function resetPassword(Request $request)
     {
-        
+
         $oldPassword = $request->input('oldPassword');
-        $password = $request->input('password');
-        $data = $request->all();
-        $rules = [
+        $password    = $request->input('password');
+        $data        = $request->all();
+        $rules       = [
             'oldPassword' => 'required|between:6,20',
-            'password' => 'required|between:6,20|confirmed',
+            'password'    => 'required|between:6,20|confirmed',
         ];
         $messages = [
-            'required' => '密码不能为空',
-            'between' => '密码必须是6~20位之间',
+            'required'  => '密码不能为空',
+            'between'   => '密码必须是6~20位之间',
             'confirmed' => '新密码和确认密码不一致',
         ];
         $validator = Validator::make($data, $rules, $messages);
 
         $validator->validate();
 
-
         $user = Auth::user();
         // dd($user);
         /*p($oldPassword);
         p($user->password);*/
-        
-        
+
         if (!\Hash::check($oldPassword, $user->password)) {
 
             return $this->baseFailed($message = '原密码错误');
-        }else{
+        } else {
             /*return response([
-                'sta' => 'success'
+            'sta' => 'success'
             ]);*/
             $user->password = bcrypt($password);
             $user->save();
-    
+
             Auth::guard()->logout(); //更改完这次密码后，退出这个用户
-            
+
             return response([
-                'status' => 'success'
+                'status' => 'success',
             ]);
 
             // return redirect('login');

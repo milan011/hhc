@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-// use App\InventoryPrice;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Repositories\Inventory\InventoryRepositoryInterface;
+// use App\InventoryPrice;
 use App\Http\Resources\Inventory\InventoryResource;
-use App\Http\Resources\Inventory\InventoryResourceCollection;
+use App\Repositories\Inventory\InventoryRepositoryInterface;
+use Illuminate\Http\Request;
+
 //use App\Http\Requests\Inventory\UpdateInventoryRequest;
 //use App\Http\Requests\Package\StorePackageRequest;
 
@@ -20,7 +19,7 @@ class InventoryController extends Controller
 
         InventoryRepositoryInterface $inventory
     ) {
-    
+
         $this->inventory = $inventory;
         // $this->middleware('brand.create', ['only' => ['create']]);
     }
@@ -36,28 +35,27 @@ class InventoryController extends Controller
         $query_list = jsonToArray($request->input('query')); //获取搜索信息
 
         // dd($query_list);
-        if(!empty($query_list['inventoryDate'])){
+        if (!empty($query_list['inventoryDate'])) {
             //查询历史库存
             // dd('查理斯');
             $inventorys = $this->inventory->getHistoryInventory($query_list);
-        }else{
+        } else {
             $inventorys = $this->inventory->getAllInventory($query_list);
         }
 
         // dd($inventorys[1]);
 
         /*foreach ($inventorys as $key => $value) {
-            if(empty($value->belongsToGoods)){
-                return $value;
-            }
+        if (empty($value->belongsToGoods)) {
+        return $value;
         }
+        }*/
 
-        */
-       // dd($inventorys);
+        // dd($inventorys);
         /*$inventorys = $inventorys->filter(function ($value, $key) {
-            if(!empty($value->belongsToGoods)){
-                return $value;
-            }
+        if(!empty($value->belongsToGoods)){
+        return $value;
+        }
         });
 
         dd($inventorys);*/
@@ -98,11 +96,13 @@ class InventoryController extends Controller
         $new_inventory = $this->inventory->create($inventoryRequest);
         // $new_inventory->belongsToCreater;
         // dd($new_inventory);
-        if($new_inventory){ //添加成功
+        if ($new_inventory) {
+            //添加成功
             return $this->baseSucceed($respond_data = $new_inventory, $message = '添加成功');
-        }else{  //添加失败
+        } else {
+            //添加失败
             return $this->baseFailed($message = '内部错误');
-        }   
+        }
     }
 
     /**
@@ -146,7 +146,7 @@ class InventoryController extends Controller
     {
         // dd($inventoryRequest->all());
         $update_inventory = $this->inventory->isRepeat($inventoryRequest);
-        if($update_inventory && ($update_inventory->id != $id)){
+        if ($update_inventory && ($update_inventory->id != $id)) {
             return $this->baseFailed($message = '您修改后的套餐信息与现有套餐冲突');
         }
         $inventory = $this->inventory->update($inventoryRequest, $id);
@@ -161,28 +161,29 @@ class InventoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
+    {
         // dd('删了');
-        $this->inventory->destroy($id);        
+        $this->inventory->destroy($id);
         return $this->baseSucceed($message = '修改成功');
     }
 
     //ajax判断车型是否重复
-    public function checkRepeat(Request $request){
+    public function checkRepeat(Request $request)
+    {
 
         // dd($request->all());
-        if($this->category->isRepeat($request)){
+        if ($this->category->isRepeat($request)) {
             //车型重复
             return response()->json(array(
-                'status' => 1,
+                'status'  => 1,
                 // 'data'   => $category,
-                'message'   => '系列名称重复'
+                'message' => '系列名称重复',
             ));
-        }else{
+        } else {
             //车型不重复
             return response()->json(array(
-                'status' => 0,
-                'message'   => '系列名称不重复'
+                'status'  => 0,
+                'message' => '系列名称不重复',
             ));
         }
     }

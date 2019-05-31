@@ -2,18 +2,18 @@
 namespace App\Repositories\Notice;
 
 use App\Notice;
-use Session;
-use Illuminate\Http\Request;
-use Gate;
-use Datatables;
-use Carbon;
-use PHPZen\LaravelRbac\Traits\Rbac;
-use Auth;
-use Illuminate\Support\Facades\Input;
-use DB;
-use Debugbar;
 use App\Repositories\BaseInterface\Repository;
 use App\Repositories\Notice\NoticeRepositoryInterface;
+use Auth;
+use Carbon;
+use Datatables;
+use DB;
+use Debugbar;
+use Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use PHPZen\LaravelRbac\Traits\Rbac;
+use Session;
 
 class NoticeRepository implements NoticeRepositoryInterface
 {
@@ -37,14 +37,11 @@ class NoticeRepository implements NoticeRepositoryInterface
     }
 
     public function allNotices()
-    {   
-        /*$notice_user = new Notice;
-        // $info = $notice_user::with('App\User')->find(1);
-        $info = Notice::with('belongsToUser')->find(1);
-        // dd(lastSql());
-        dd($info->belongsToUser->name);
-        dd($info->belongsToUser()->get());*/
-        return Notice::with('belongsToUser')->orderBy('id', 'DESC')->paginate(10);
+    {
+        return Notice::with('belongsToUser')
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        // return Notice::with('belongsToUser')->orderBy('id', 'DESC')->paginate(10);
     }
 
     // 创建公告
@@ -52,34 +49,39 @@ class NoticeRepository implements NoticeRepositoryInterface
     {
         $requestData['user_id'] = Auth::id();
         // dd($requestData);
-        
+
         $notice = new Notice;
-        $input  =  array_replace($requestData->all());
+        $input  = array_replace($requestData->all());
         $notice->fill($input);
 
         $notice = $notice->create($input);
-         
+
         return $notice;
     }
 
     // 修改公告
     public function update($requestData, $id)
     {
-        
-        $Notice  = Notice::findorFail($id);
-        $input =  array_replace($requestData->all());
+
+        $Notice = Notice::findorFail($id);
+        $input  = array_replace($requestData->all());
         $Notice->fill($input)->save();
 
-        // dd($Notice->toJson());
-        Session::flash('sucess', '修改公告成功');          
         return $Notice;
     }
 
     // 删除公告
     public function destroy($id)
     {
-        $Notice = Notice::findorFail($id);       
-        $Notice->delete();
-        Session()->flash('sucess', '删除公告成功');        
+        try {
+            $notice           = Notice::findorFail($id);
+            $notice->IsDelete = '1';
+            $notice->save();
+
+            return $notice;
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            return false;
+        }
     }
 }
