@@ -50,7 +50,7 @@
 </div>
 </template>
 <script>
-  import { parseTime } from '@/utils'
+  import { parseTime } from '@adminPc/utils'
   export default {
     name: 'ShowInfo',
     data() {

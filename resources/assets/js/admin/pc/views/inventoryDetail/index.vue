@@ -169,11 +169,11 @@
 
 <script>
 
-import { inventoryDetailList, createInventoryDetail, getInventoryDetail, updateInventoryDetail, deleteInventoryDetail } from '@/api/inventoryDetail'
-import { userAll, } from '@/api/user'
-import { goodsAll, } from '@/api/goods'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
+import { inventoryDetailList, createInventoryDetail, getInventoryDetail, updateInventoryDetail, deleteInventoryDetail } from '@adminPc/api/inventoryDetail'
+import { userAll, } from '@adminPc/api/user'
+import { goodsAll, } from '@adminPc/api/goods'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

@@ -16,7 +16,7 @@
 </div>
 </template>
 <script>
-  import { getUserRoles, giveUserRoles } from '@/api/user'
+  import { getUserRoles, giveUserRoles } from '@adminPc/api/user'
   import { fetchList } from '@/api/role'
   // const cityOptions = ['上海', '北京', '广州', '深圳'];
   export default {

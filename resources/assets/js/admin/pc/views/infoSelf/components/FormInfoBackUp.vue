@@ -265,12 +265,12 @@
 </div>
 </template>
 <script>
-  import { createInfo, updateInfo, deleteInfo, getInfo } from '@/api/infoSelf'
-  import { isTelephone } from '@/utils/validate'
-  import { managerAll } from '@/api/manager'
-  import { packageAll } from '@/api/package'
-  import  { package_year ,package_month, collections_type }  from '@/config.js'
-  import  { isEmpty }  from '@/common.js'
+  import { createInfo, updateInfo, deleteInfo, getInfo } from '@adminPc/api/infoSelf'
+  import { isTelephone } from '@adminPc/utils/validate'
+  import { managerAll } from '@adminPc/api/manager'
+  import { packageAll } from '@adminPc/api/package'
+  import  { package_year ,package_month, collections_type }  from '@adminPc/config.js'
+  import  { isEmpty }  from '@adminPc/common.js'
   export default {
     data() {
       const validateTelephone = (rule, value, callback) => {

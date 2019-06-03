@@ -55,10 +55,10 @@
 </template>
 
 <script>
-import { infoStatistics} from '@/api/infoSelf'
+import { infoStatistics} from '@adminPc/api/infoSelf'
 
-import waves from '@/directive/waves' // 水波纹指令
-import { package_year ,package_month,}  from '@/config.js'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { package_year ,package_month,}  from '@adminPc/config.js'
 
 export default {
   name: 'InfoStatistics',

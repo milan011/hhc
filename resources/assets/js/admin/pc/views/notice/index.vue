@@ -81,8 +81,8 @@ import '@adminPc/static/tinymce4.7.5/tinymce.min.js'
 import Tinymce from '@adminPc/components/Tinymce/index'
 import { noticeList, createNotice, getNotice, updateNotice, deleteNotice } from '@adminPc/api/notice'
 import waves from '@adminPc/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { isTelephone } from '@/utils/validate'
+import { parseTime } from '@adminPc/utils'
+import { isTelephone } from '@adminPc/utils/validate'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

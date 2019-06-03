@@ -1,5 +1,5 @@
 
-import store from '@/store'
+import store from '@adminPc/store'
 
 export default{
   inserted(el, binding, vnode) {

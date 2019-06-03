@@ -75,8 +75,8 @@
 <script>
 
 import { getRoleList, createRole, updateRole, deleteRole, getRolePermissions, getPermissions, giveRolePermissions } from '@adminPc/api/role'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
 import SwitchRoles from './components/Permission'
 // import SwitchRoles from './components/RolePermission'
 

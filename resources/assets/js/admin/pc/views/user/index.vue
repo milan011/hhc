@@ -119,9 +119,9 @@
     // import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import { fetchList, fetchPv, createUser, updateUser, deleteUser, passReset } from '@adminPc/api/user'
 import { shopAll } from '@adminPc/api/shop'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { isTelephone } from '@/utils/validate'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { isTelephone } from '@adminPc/utils/validate'
 import  SetRoles  from './components/SetRoles'
 
 const calendarTypeOptions = [

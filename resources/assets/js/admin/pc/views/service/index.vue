@@ -133,10 +133,10 @@
 
 // import { fetchList, fetchPv, createPermission, updatePermission, deletePermission } from '@/api/permission'
 // import { packageList, createPackage, getPackage, updatePackage, deletePackage } from '@/api/package'
-import { serviceList, createService, getService, updateService, deleteService } from '@/api/service'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { serviceReturnType }  from '@/config.js'
+import { serviceList, createService, getService, updateService, deleteService } from '@adminPc/api/service'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { serviceReturnType }  from '@adminPc/config.js'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

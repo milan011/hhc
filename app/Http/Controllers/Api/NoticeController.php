@@ -82,7 +82,7 @@ class NoticeController extends Controller
         // dd($notice_info);exit;
         if ($notice_info) {
             //添加成功
-            return $this->baseSucceed($Data = $notice_info, $Message = '添加公告成功');
+            return $this->baseSucceed($Data = $notice_info, $Message = '获取公告详情成功');
         } else {
             //添加失败
             return $this->baseFailed($Message = '内部错误');
@@ -138,7 +138,7 @@ class NoticeController extends Controller
         $notice = $this->notice->destroy($id);
         if ($notice) {
             //添加成功
-            return $this->baseSucceed($Data = $notice, $Message = '删除门店成功');
+            return $this->baseSucceed($Data = $notice, $Message = '删除公告成功');
         } else {
             //添加失败
             return $this->baseFailed($Message = '内部错误');

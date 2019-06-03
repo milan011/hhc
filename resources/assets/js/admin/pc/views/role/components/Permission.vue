@@ -19,7 +19,7 @@
 </div>
 </template>
 <script>
-  import { getRolePermissions, getPermissions, giveRolePermissions } from '@/api/role'
+  import { getRolePermissions, getPermissions, giveRolePermissions } from '@adminPc/api/role'
   // const cityOptions = ['上海', '北京', '广州', '深圳'];
   export default {
     data() {

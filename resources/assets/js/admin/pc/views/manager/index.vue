@@ -71,10 +71,10 @@
 <script>
 
 // import { fetchList, fetchPv, createPermission, updatePermission, deletePermission } from '@/api/manager'
-import { managerList, createManager, updateManager, deleteManager } from '@/api/manager'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { isTelephone } from '@/utils/validate'
+import { managerList, createManager, updateManager, deleteManager } from '@adminPc/api/manager'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { isTelephone } from '@adminPc/utils/validate'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

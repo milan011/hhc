@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
-import LangSelect from '@/components/LangSelect'
+import { isvalidUsername } from '@adminPc/utils/validate'
+import LangSelect from '@adminPc/components/LangSelect'
 // import SocialSign from './socialsignin'
 
 export default {

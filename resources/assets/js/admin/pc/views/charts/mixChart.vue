@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Chart from '@/components/Charts/mixChart'
+import Chart from '@adminPc/components/Charts/mixChart'
 
 export default {
   name: 'MixChart',

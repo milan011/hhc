@@ -263,13 +263,13 @@
 
 <script>
 
-import { goodsAll } from '@/api/goods'
-import { userAll, } from '@/api/user'
-import { serviceAll } from '@/api/service'
-import { isTelephone } from '@/utils/validate'
-import { serviceDetailList, createServiceDetail, getServiceDetail, updateServiceDetail, deleteServiceDetail } from '@/api/serviceDetail'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
+import { goodsAll } from '@adminPc/api/goods'
+import { userAll, } from '@adminPc/api/user'
+import { serviceAll } from '@adminPc/api/service'
+import { isTelephone } from '@adminPc/utils/validate'
+import { serviceDetailList, createServiceDetail, getServiceDetail, updateServiceDetail, deleteServiceDetail } from '@adminPc/api/serviceDetail'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

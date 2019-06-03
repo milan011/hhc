@@ -50,41 +50,18 @@ Route::group([
     Route::get('role/{role}/permissions', 'RoleController@getRolePermissions');
     Route::post('giveRole/{role}/permissions', 'RoleController@giveRolePermissions');
 
-    //Manager
-    Route::get('managerList', 'ManagerController@index');
-    Route::get('managerAll', 'ManagerController@managerAll'); //所有权限列表,无分页
-    Route::post('manager', 'ManagerController@store');
-    Route::put('manager/{id}', 'ManagerController@update');
-    Route::delete('manager/{id}', 'ManagerController@destroy');
-
-    //Package
-    Route::get('packageList', 'PackageController@index');
-    Route::get('packageAll', 'PackageController@packageAll'); //所有套餐列表,无分页
-    Route::post('package', 'PackageController@store');
-    Route::get('getPackage/{id}', 'PackageController@getPackage');
-    Route::put('package/{id}', 'PackageController@update');
-    Route::delete('package/{id}', 'PackageController@destroy');
-
-    //InfoSelf
-    Route::get('infoSelfList', 'InfoSelfController@index');
-    Route::post('infoSelf', 'InfoSelfController@store');
-    Route::get('getInfo/{id}', 'InfoSelfController@getInfo');
-    Route::put('infoSelf/{id}', 'InfoSelfController@update');
-    Route::delete('infoSelf/{id}', 'InfoSelfController@destroy');
-    Route::match(['get', 'post'], 'infoStatistics', 'InfoSelfController@statistics');
-
-    //InfoDianxin
-    Route::get('infoDianxinList', 'InfoDianxinController@index');
-    // Route::get('infoDianxinAll', 'InfoDianxinController@infoDianxinAll'); //所有信息列表,无分页
-    Route::post('infoDianxin', 'InfoDianxinController@store');
-    Route::post('importInfoDianxin', 'InfoDianxinController@importInfo');
-    Route::get('infoDianxin/exampleExcelDownload', 'InfoDianxinController@exampleExcelDownload');
-    // Route::post('infoDianxin/dealWith', 'InfoDianxinController@dealWith')->middleware('throttle:20');
-    Route::get('infoDianxin/dealWith', 'InfoDianxinController@dealWith');
-    Route::put('infoDianxin/{id}', 'InfoDianxinController@update');
-    Route::delete('infoDianxin/{id}', 'InfoDianxinController@destroy');
-
-    Route::get('infoDianxin/chormeBroswerDown', 'InfoDianxinController@chormeBroswerDown');
+    //Car
+    Route::get('carList', 'CarController@index'); //车源列表
+    Route::get('getCarInfo', 'CarController@getCar'); //车源详情
+    Route::post('carInfoAdd', 'CarController@storeInfo'); //车源信息添加
+    Route::post('carImageAdd', 'CarController@storeImage'); //车源信息添加
+    Route::put('carInfoUpdate/{id}', 'CarController@updateInfo'); //车源信息修改
+    Route::put('carImageUpdate/{id}', 'CarController@updateImage'); //车源图片修改
+    Route::get('carSaleOrUnsale/{id}', 'CarController@SaleOrUnsale'); //车源上/下架
+    Route::get('carTouch', 'CarController@carTouch'); //快速跟进
+    Route::post('carFollow/{id}', 'CarController@carFollow'); //车源跟踪
+    Route::post('carTrans/{id}', 'CarController@carTrans'); //发起交易
+    Route::post('carPingGu/{id}', 'CarController@carPingGu'); //车源评估
 
     //Shop
     Route::get('shopList', 'ShopController@index');
@@ -94,7 +71,7 @@ Route::group([
     Route::put('shop/{id}', 'ShopController@update');
     Route::delete('shop/{id}', 'ShopController@destroy');
 
-    //Shop
+    //Notice
     Route::get('noticeList', 'NoticeController@index');
     Route::get('noticeAll', 'NoticeController@noticeAll'); //所有公告列表,无分页
     Route::post('notice', 'NoticeController@store');
@@ -131,11 +108,46 @@ Route::group([
     Route::put('inventoryDetail/{id}', 'InventoryDetailController@update');
     Route::delete('inventoryDetail/{id}', 'InventoryDetailController@destroy');
 
+    //Manager
+    Route::get('managerList', 'ManagerController@index');
+    Route::get('managerAll', 'ManagerController@managerAll'); //所有权限列表,无分页
+    Route::post('manager', 'ManagerController@store');
+    Route::put('manager/{id}', 'ManagerController@update');
+    Route::delete('manager/{id}', 'ManagerController@destroy');
+
+    //Package
+    Route::get('packageList', 'PackageController@index');
+    Route::get('packageAll', 'PackageController@packageAll'); //所有套餐列表,无分页
+    Route::post('package', 'PackageController@store');
+    Route::get('getPackage/{id}', 'PackageController@getPackage');
+    Route::put('package/{id}', 'PackageController@update');
+    Route::delete('package/{id}', 'PackageController@destroy');
+
+    //InfoSelf
+    Route::get('infoSelfList', 'InfoSelfController@index');
+    Route::post('infoSelf', 'InfoSelfController@store');
+    Route::get('getInfo/{id}', 'InfoSelfController@getInfo');
+    Route::put('infoSelf/{id}', 'InfoSelfController@update');
+    Route::delete('infoSelf/{id}', 'InfoSelfController@destroy');
+    Route::match(['get', 'post'], 'infoStatistics', 'InfoSelfController@statistics');
+
+    //InfoDianxin
+    Route::get('infoDianxinList', 'InfoDianxinController@index');
+    // Route::get('infoDianxinAll', 'InfoDianxinController@infoDianxinAll'); //所有信息列表,无分页
+    Route::post('infoDianxin', 'InfoDianxinController@store');
+    Route::post('importInfoDianxin', 'InfoDianxinController@importInfo');
+    Route::get('infoDianxin/exampleExcelDownload', 'InfoDianxinController@exampleExcelDownload');
+    // Route::post('infoDianxin/dealWith', 'InfoDianxinController@dealWith')->middleware('throttle:20');
+    Route::get('infoDianxin/dealWith', 'InfoDianxinController@dealWith');
+    Route::put('infoDianxin/{id}', 'InfoDianxinController@update');
+    Route::delete('infoDianxin/{id}', 'InfoDianxinController@destroy');
+
+    Route::get('infoDianxin/chormeBroswerDown', 'InfoDianxinController@chormeBroswerDown');
     /*
     Route::get('all_roles', 'RolesController@allRoles');
     Route::delete('roles/{role}', 'RolesController@destroy');*/
     /*
-Route::post('user', 'UserController@store');
+Route::post('car', 'CarController@store');
 Route::get('user/{id}/edit', 'UserController@edit');
 Route::put('user/{id}', 'UserController@update');
 Route::delete('user/{id}', 'UserController@destroy');

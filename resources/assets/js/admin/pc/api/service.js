@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-import { getToken } from '@/utils/auth'
+import request from '@adminPc/utils/request'
+import { getToken } from '@adminPc/utils/auth'
 import { ROAST_CONFIG } from '../config.js'
 
 let token = getToken()

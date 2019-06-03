@@ -158,8 +158,8 @@ export default {
         userAddReturn() {
             const userData = {
                 id: undefined,
-                name: 'wxm222',
-                nick_name: 'wxmmm',
+                name: 'wxm22222211',
+                nick_name: 'wxmm222m',
                 shop_id: 12,
                 password: '111111',
                 password_confirmation: '111111',

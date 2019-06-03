@@ -107,9 +107,9 @@
 </div>
 </template>
 <script>
-  import { getInfo } from '@/api/infoSelf'
-  import { parseTime } from '@/utils'
-  import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@/config.js'
+  import { getInfo } from '@adminPc/api/infoSelf'
+  import { parseTime } from '@adminPc/utils'
+  import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@adminPc/config.js'
   export default {
     name: 'ShowInfo',
     data() {

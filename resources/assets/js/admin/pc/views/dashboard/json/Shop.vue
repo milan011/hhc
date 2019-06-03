@@ -95,7 +95,7 @@ export default {
         shopAddCommit() {
             const userData = {
                 id: undefined,
-                name: '门店名称',
+                name: '门店名称2222',
                 shopCity: ['10', '138'], //省份id.城市id
                 type: '1',  
                 telephone: '门店电话',       
@@ -107,7 +107,7 @@ export default {
         shopAddReturn() {
             const userData = {
                 id: undefined,
-                name: 'you一个新店',
+                name: 'you一个新店水电费',
                 shopCity: ['10', '138'], //省份id.城市id
                 type: '1',  
                 telephone: '13731080174',       
@@ -125,7 +125,7 @@ export default {
         shopUpdateCommit() {
             const userData = {
                 id: 12,
-                name: 'you一个新店',
+                name: 'you一个新店2222',
                 shopCity: ['10', '138'], //省份id.城市id
                 type: '1',  
                 telephone: '13731080174',       

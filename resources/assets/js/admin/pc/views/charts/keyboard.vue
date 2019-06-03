@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Chart from '@/components/Charts/keyboard'
+import Chart from '@adminPc/components/Charts/keyboard'
 
 export default {
   name: 'KeyboardChart',

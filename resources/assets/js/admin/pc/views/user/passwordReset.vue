@@ -32,7 +32,7 @@
 </div>
 </template>
 <script>
-  import { resetPassword} from '@/api/user'
+  import { resetPassword} from '@adminPc/api/user'
   export default {
     name: 'passwordReset',
     data() {

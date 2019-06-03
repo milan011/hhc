@@ -1,5 +1,5 @@
 //电信信息管理路由组
-import Layout from '@/views/layout/Layout'
+import Layout from '@adminPc/views/layout/Layout'
 
 const infoDianxinRouter = {
     path: '/infoDianxin',

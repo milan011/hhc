@@ -30,8 +30,8 @@
 
 <script>
 import path from 'path'
-import { generateTitle } from '@/utils/i18n'
-import { validateURL } from '@/utils/validate'
+import { generateTitle } from '@adminPc/utils/i18n'
+import { validateURL } from '@adminPc/utils/validate'
 import Item from './Item'
 
 export default {

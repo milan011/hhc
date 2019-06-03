@@ -112,16 +112,16 @@
 </template>
 
 <script>
-import { infoDianxinList, deleteInfoDianxin, importInfoDianxin, dealInfoDianxin } from '@/api/infoDianxin'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { isTelephone, isReturnMonth, isBalanceMonth } from '@/utils/validate'
+import { infoDianxinList, deleteInfoDianxin, importInfoDianxin, dealInfoDianxin } from '@adminPc/api/infoDianxin'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { isTelephone, isReturnMonth, isBalanceMonth } from '@adminPc/utils/validate'
 import  ShowInfo  from './components/ShowInfo'
 import FormInfo from './components/FormInfo'
-import  { isEmpty }  from '@/common.js'
-import { export_table_to_excel, export_json_to_excel } from '@/vendor/Export2Excel.js'
-import { infoDianxinStatus, package_year ,package_month }  from '@/config.js'
-import UploadExcelComponent from '@/components/UploadExcel/upload.vue'
+import  { isEmpty }  from '@adminPc/common.js'
+import { export_table_to_excel, export_json_to_excel } from '@adminPc/vendor/Export2Excel.js'
+import { infoDianxinStatus, package_year ,package_month }  from '@adminPc/config.js'
+import UploadExcelComponent from '@adminPc/components/UploadExcel/upload.vue'
 
 export default {
   name: 'infoSelfList',

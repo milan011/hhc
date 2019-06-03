@@ -89,9 +89,9 @@
 
 <script>
 
-import { fetchList, fetchPv, createPermission, updatePermission, deletePermission } from '@/api/permission'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
+import { fetchList, fetchPv, createPermission, updatePermission, deletePermission } from '@adminPc/api/permission'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

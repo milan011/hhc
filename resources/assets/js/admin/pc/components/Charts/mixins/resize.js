@@ -1,4 +1,4 @@
-import { debounce } from '@/utils'
+import { debounce } from '@adminPc/utils'
 
 export default {
   mounted() {

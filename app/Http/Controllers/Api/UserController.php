@@ -162,7 +162,7 @@ class UserController extends Controller
 
         if ($user) {
             //添加成功
-            return $this->baseSucceed($Data = $user, $Message = '修改角色成功');
+            return $this->baseSucceed($Data = $user, $Message = '修改用户成功');
         } else {
             //添加失败
             return $this->baseFailed($Message = '内部错误');
@@ -248,7 +248,7 @@ class UserController extends Controller
 
         if ($user) {
             //添加成功
-            return $this->baseSucceed($Data = $user, $Message = '赋予用户角色成功');
+            return $this->baseSucceed($Data = $user, $Message = '重置密码');
         } else {
             //添加失败
             return $this->baseFailed($Message = '内部错误');

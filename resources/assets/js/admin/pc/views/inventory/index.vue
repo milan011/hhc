@@ -105,11 +105,11 @@
 <script>
 
 // import { goodsAll } from '@/api/goods'
-import { inventoryList, createInventory } from '@/api/inventory'
-import { goodsAll, } from '@/api/goods'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { foodStatus }  from '@/config.js'
+import { inventoryList, createInventory } from '@adminPc/api/inventory'
+import { goodsAll, } from '@adminPc/api/goods'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { foodStatus }  from '@adminPc/config.js'
 
 const calendarTypeOptions = [
   { key: 'web', display_name: 'web' },

@@ -150,14 +150,14 @@
 </template>
 
 <script>
-import { infoList, deleteInfo } from '@/api/infoSelf'
-import { userAll, } from '@/api/user'
-import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import { isTelephone } from '@/utils/validate'
+import { infoList, deleteInfo } from '@adminPc/api/infoSelf'
+import { userAll, } from '@adminPc/api/user'
+import waves from '@adminPc/directive/waves' // 水波纹指令
+import { parseTime } from '@adminPc/utils'
+import { isTelephone } from '@adminPc/utils/validate'
 import  ShowInfo  from './components/ShowInfo'
 import FormInfo from './components/FormInfo'
-import { export_table_to_excel, export_json_to_excel } from '@/vendor/Export2Excel.js'
+import { export_table_to_excel, export_json_to_excel } from '@adminPc/vendor/Export2Excel.js'
 import { infoSelfStatus ,jituanStatus, oldBindStatus, package_year ,package_month, collections_type }  from '@/config.js'
 
 export default {

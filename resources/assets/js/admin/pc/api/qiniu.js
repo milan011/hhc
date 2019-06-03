@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@adminPc/utils/request'
 import { ROAST_CONFIG } from '../config.js'
 
 export function getToken() {
