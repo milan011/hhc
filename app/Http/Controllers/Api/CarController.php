@@ -45,13 +45,12 @@ class CarController extends Controller
      */
     public function index(Request $request)
     {
-        dd($request->all());
-        $query_list = jsonToArray($request->input('query'));
-        dd($query_list);
+        // dd($request->all());
+
         // $all_top_brands        = $this->brands->getChildBrand(0);
         $request['car_status'] = '1';
         $request['is_show']    = '1';
-        $select_conditions     = $request->all();
+        // $select_conditions     = $request->all();
         // dd($select_conditions);
 
         $cars = $this->car->getAllcars($request);
@@ -59,49 +58,14 @@ class CarController extends Controller
         // $shops = $this->shop->getShopsInProvence('10');
 
         // dd($shops);
-        dd(lastSql());
-        dd($cars);
+        /*dd(lastSql());
+        dd($cars);*/
         /*foreach ($cars as $key => $value) {
         p($value->id);
         p($value->belongsToUser->nick_name);
         }
         exit;*/
-        $car_status_current = '1';
-
-        return new CarResource($cars);
-
-        /*return view('admin.car.index', compact('cars', 'car_status_current', 'all_top_brands', 'select_conditions', 'shops'));*/
-    }
-
-    /**
-     * Display a listing of the resource.
-     * 所有车源列表
-     * @return \Illuminate\Http\Response
-     */
-    public function listlll(Request $request)
-    {
-        dd($request->all());
-        $query_list = jsonToArray($request->input('query'));
-        dd($query_list);
-        // $all_top_brands        = $this->brands->getChildBrand(0);
-        $request['car_status'] = '1';
-        $request['is_show']    = '1';
-        $select_conditions     = $request->all();
-        // dd($select_conditions);
-
-        $cars = $this->car->getAllcars($request);
-        // dd($cars);
-        // $shops = $this->shop->getShopsInProvence('10');
-
-        // dd($shops);
-        dd(lastSql());
-        dd($cars);
-        /*foreach ($cars as $key => $value) {
-        p($value->id);
-        p($value->belongsToUser->nick_name);
-        }
-        exit;*/
-        $car_status_current = '1';
+        // $car_status_current = '1';
 
         return new CarResource($cars);
 
@@ -212,9 +176,24 @@ class CarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeInfo(Request $request)
+    public function storeInfo(Request $carRequest)
     {
-        //
+        // dd($carRequest->all());
+        if ($this->car->isRepeat($carRequest->VIN)) {
+            // dd('呵呵');
+            return $this->baseFailed($Message = 'vin码重复');
+        }
+
+        $cars = $this->car->create($carRequest);
+        $cars->belongsToShop;
+        $cars->belongsToUser;
+        if ($cars) {
+            //添加成功
+            return $this->baseSucceed($Data = $cars, $Message = '添加车源成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -234,13 +213,22 @@ class CarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function ajaxAdd(StoreCarsRequest $carRequest)
+    public function ajaxAdd(Request $carRequest)
     {
-        // dd($carRequest->all());
+
+        if ($this->car->isRepeat($carRequest->VIN)) {
+            // dd('呵呵');
+            return $this->baseFailed($Message = 'vin码重复');
+        }
+
         $cars = $this->car->create($carRequest);
-        /*p('hehe');
-        dd($car);*/
-        return response()->json($cars);
+        if ($cars) {
+            //添加成功
+            return $this->baseSucceed($Data = $cars, $Message = '添加车源成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**

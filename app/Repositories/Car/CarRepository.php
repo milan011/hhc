@@ -18,7 +18,7 @@ use Session;
 class CarRepository implements CarRepositoryInterface
 {
     //默认查询数据
-    protected $select_columns = ['id', 'name', 'car_code', 'vin_code', 'category_id', 'capacity', 'top_price', 'plate_date', 'plate_end', 'mileage', 'age', 'out_color', 'inside_color', 'gearbox', 'plate_provence', 'plate_city', 'safe_end', 'sale_number', 'categorey_type', 'shop_id', 'creater_id', 'created_at', 'updated_at', 'description', 'bottom_price', 'safe_type', 'recommend', 'is_top', 'car_type', 'car_status', 'customer_id', 'guide_price', 'pg_description', 'xs_description', 'cate_id', 'appraiser_price', 'is_show', 'is_appraiser', 'appraiser_at'];
+    protected $select_columns = ['ID', 'Code', 'VIN', 'Area', 'PlateNum', 'BuyDate', 'FullName', 'Factory', 'CarModel', 'CarType', 'CarYear', 'InitPrice', 'ImportType', 'MakeDate', 'Emission', 'Transmission', 'Capacity', 'CapacityNum', 'Status', 'EvalAMT', 'HfEvalById', 'XnEvalById', 'XnDate', 'JzEvalById', 'EvalDate', 'SaleAMT', 'IsSaled', 'SaledAMT', 'SaledDate', 'IsPutOn', 'PutOnDate', 'PutDownDate', 'Depreciate', 'UserKind', 'IsSchool', 'CreateDate', 'UpdateDate', 'IsDeleted', 'IsCase', 'AddCaseTime', 'FromCaseType', 'CaseUserId', 'CaseUserName', 'CaseCarId', 'Shop_Id', 'CreateId', 'Customer_Id', 'Is_Top', 'Is_Show', 'Recommend', 'Car_Status', 'Pg_description', 'XS_description', 'Description', 'Sale_number', 'Safe_end', 'Safe_type', 'Out_color', 'Inside_color', 'AuditStatus'];
 
     // 车源表列名称-注释对应
     protected $columns_annotate = [
@@ -76,27 +76,27 @@ class CarRepository implements CarRepositoryInterface
 
         $query = new Cars(); // 返回的是一个Cars实例,两种方法均可
 
-        $query = $query->addCondition($request->all(), $is_self); //根据条件组合语句
+        $query_list = jsonToArray($request->input('query'));
+        // dd($query_list);
+
+        $query = $query->addCondition($query_list, $query_list['is_self']); //根据条件组合语句
 
         if ($request->has('os_recommend') && $request->os_recommend == 'yes') {
             //系统推荐信息scope添加
             // $query = $query->osRecommend($request->all());
         }
         // dd($query);
-        $query = $query->where('name', '!=', '');
+        $query = $query->where('FullName', '!=', '');
         // $query = $query->where('is_show', '1');
         // $query = $query->orWhere('car_status', '6');
         // $query = $query->where('car_status', $request->input('car_status', '1'));
         // dd($query->toSql());
-        if ($request->has('home')) {
 
-            return $query->select($this->select_columns)
-                ->orderBy('created_at', 'desc')
-                ->paginate(20);
-        }
-        return $query->select($this->select_columns)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $request->has('home') ? $pag = 20 : $pag = 10;
+
+        return $query->with('belongsToShop', 'belongsToUser')->select($this->select_columns)
+            ->orderBy('PutOnDate', 'desc')
+            ->paginate($pag);
     }
 
     // 前端显示车源列表
@@ -328,54 +328,52 @@ class CarRepository implements CarRepositoryInterface
     // 创建车源
     public function create($requestData)
     {
-        if (!empty($requestData->vin_code) && $this->isRepeat($requestData->vin_code)) {
-            //存在车架号并且存在该车架号记录
+        DB::beginTransaction();
+        try {
 
-            $car = $this->isRepeat($requestData->vin_code);
-            // dd(lastSql());
-            $car->isRepeat = true;
+            // 添加车源并返回实例,处理跟进(添加车源)
+            $requestData['Shop_Id']    = '38';
+            $requestData['CreateId']   = Auth::id();
+            $requestData['CreateDate'] = Carbon::now()->toDateTimeString();
+            $requestData['UpdateDate'] = Carbon::now()->toDateTimeString();
+            //$requestData['car_code']       = getCarCode('car');
+            //$requestData['age']            = getCarAge($requestData->plate_date);
+            //$requestData['categorey_type'] = $requestData['category_type'];
+
+            //dd($requestData->all());
+            /*dd(Carbon::parse($requestData->plate_date));*/
+            // dd(Carbon::now());
+            // echo Carbon::now();exit;
+
+            //unset($requestData['_token']);
+            //unset($requestData['ajax_request_url']);
+
+            $car   = new Cars();
+            $input = array_replace($requestData->all());
+            $car->fill($input);
+            $car = $car->create($input);
+            // dd($car);
+            $follow_info = new CarFollow(); //车源跟进对象
+
+            $create_content = collect(['创建车源'])->toJson(); //定义车源跟进时信息变化情况,即跟进描述
+
+            // 车源跟进信息
+            $follow_info->car_id       = $car->id;
+            $follow_info->user_id      = Auth::id();
+            $follow_info->follow_type  = '1';
+            $follow_info->operate_type = '1';
+            $follow_info->description  = $create_content;
+            $follow_info->prev_update  = $car->UpdateDate;
+
+            $follow_info->save();
+            DB::commit();
             return $car;
-        } else {
-            $car_obj = (object) '';
-            DB::transaction(function () use ($requestData, $car_obj) {
-                // 添加车源并返回实例,处理跟进(添加车源)
-                $requestData['creater_id']     = Auth::id();
-                $requestData['car_code']       = getCarCode('car');
-                $requestData['age']            = getCarAge($requestData->plate_date);
-                $requestData['categorey_type'] = $requestData['category_type'];
-
-                //dd($requestData->all());
-                /*dd(Carbon::parse($requestData->plate_date));
-                dd(Carbon::now());*/
-
-                //unset($requestData['_token']);
-                //unset($requestData['ajax_request_url']);
-
-                $car   = new Cars();
-                $input = array_replace($requestData->all());
-                $car->fill($input);
-                $car = $car->create($input);
-
-                $follow_info = new CarFollow(); //车源跟进对象
-
-                $create_content = collect(['创建车源'])->toJson(); //定义车源跟进时信息变化情况,即跟进描述
-
-                // 车源跟进信息
-                $follow_info->car_id       = $car->id;
-                $follow_info->user_id      = Auth::id();
-                $follow_info->follow_type  = '1';
-                $follow_info->operate_type = '1';
-                $follow_info->description  = $create_content;
-                $follow_info->prev_update  = $car->updated_at;
-
-                $follow_info->save();
-
-                $car_obj->scalar = $car;
-                // dd($car_obj);
-                // return $car_obj;
-            });
-            return $car_obj;
+        } catch (\Exception $e) {
+            throw $e;
+            DB::rollBack();
+            return false;
         }
+
     }
 
     // 修改车源
@@ -468,7 +466,7 @@ class CarRepository implements CarRepositoryInterface
             // dd($car->age);
             // 车源跟进信息
             $follow_info->car_id       = $id;
-            $follow_info->user_id      = Auth::id();
+            $follow_info->car_id       = Auth::id();
             $follow_info->follow_type  = '1';
             $follow_info->operate_type = '2';
             $follow_info->description  = collect($update_content)->toJson();
@@ -558,7 +556,7 @@ class CarRepository implements CarRepositoryInterface
             // dd(Carbon::now()->toDateString());
             // 车源跟进信息
             $follow_info->car_id       = $id;
-            $follow_info->user_id      = Auth::id();
+            $follow_info->car_id       = Auth::id();
             $follow_info->follow_type  = '1';
             $follow_info->operate_type = '2';
             $follow_info->description  = collect($update_content)->toJson();
@@ -593,9 +591,9 @@ class CarRepository implements CarRepositoryInterface
     public function isRepeat($vin_code)
     {
 
-        $car = Cars::select('id', 'name')
-            ->where('vin_code', $vin_code)
-            ->whereIn('car_status', ['1', '2', '3', '4', '6'])
+        $car = Cars::select('ID', 'FullName')
+            ->where('VIN', $vin_code)
+            ->where('Car_Status', '1')
             ->first();
 
         // dd($car);
@@ -628,17 +626,17 @@ class CarRepository implements CarRepositoryInterface
             if ($requestData->status == 0) {
 
                 // dd('not have sb');
-                $update_content  = collect([Auth::user()->nick_name . '激活车源'])->toJson();
+                $update_content  = collect([Auth::car()->nick_name . '激活车源'])->toJson();
                 $car->car_status = '1';
             } else {
 
-                $update_content  = collect([Auth::user()->nick_name . '废弃车源'])->toJson();
+                $update_content  = collect([Auth::car()->nick_name . '废弃车源'])->toJson();
                 $car->car_status = '0';
             }
 
             // 车源跟进信息
             $follow_info->car_id       = $id;
-            $follow_info->user_id      = Auth::id();
+            $follow_info->car_id       = Auth::id();
             $follow_info->follow_type  = '1';
             $follow_info->operate_type = '2';
             $follow_info->description  = $update_content;
@@ -668,7 +666,7 @@ class CarRepository implements CarRepositoryInterface
 
             // 车源跟进信息
             $follow_info->car_id       = $id;
-            $follow_info->user_id      = Auth::id();
+            $follow_info->car_id       = Auth::id();
             $follow_info->follow_type  = '1';
             $follow_info->operate_type = '2';
             $follow_info->description  = $update_content;
@@ -699,7 +697,7 @@ class CarRepository implements CarRepositoryInterface
 
             // 车源跟进信息
             $follow_info->car_id       = $requestData->car_id;
-            $follow_info->user_id      = Auth::id();
+            $follow_info->car_id       = Auth::id();
             $follow_info->follow_type  = '2';
             $follow_info->operate_type = '2';
             $follow_info->description  = $update_content;

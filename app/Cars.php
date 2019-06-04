@@ -13,7 +13,7 @@ class Cars extends Model
      * @var string
      */
     // protected $table = 'users';
-    protected $table      = 'smx_enterprise_cars';
+    protected $table      = 'cm_carinfos';
     protected $primaryKey = 'id';
 
     /**
@@ -21,16 +21,15 @@ class Cars extends Model
      * 定义可批量赋值字段
      * @var array
      */
-    protected $fillable = ['car_code', 'name', 'brand_id', 'car_factory', 'category_id', 'categorey_type', 'cate_id', 'capacity', 'gearbox', 'out_color', 'inside_color', 'plate_date', 'plate_end', 'plate_provence', 'plate_city', 'age', 'safe_type', 'safe_end', 'sale_number', 'mileage', 'description', 'top_price', 'bottom_price', 'car_status', 'recommend', 'is_top', 'car_type', 'customer_id', 'creater_id', 'shop_id', 'want_area', 'vin_code', 'sale_tcl', 'pg_description', 'guide_price', 'xs_description', 'is_show'];
 
     /**
-     * The attributes excluded from the model's JSON form.
-     * //在模型数组或 JSON 显示中隐藏某些属性
-     * @var array
+     * 表明模型是否应该被打上时间戳
+     *
+     * @var bool
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public $timestamps = false;
+
+    protected $fillable = ['ID', 'Code', 'VIN', 'Area', 'PlateNum', 'BuyDate', 'FullName', 'Factory', 'CarModel', 'CarType', 'CarYear', 'InitPrice', 'ImportType', 'MakeDate', 'Emission', 'Transmission', 'Capacity', 'CapacityNum', 'Status', 'EvalAMT', 'HfEvalById', 'XnEvalById', 'XnDate', 'JzEvalById', 'EvalDate', 'SaleAMT', 'IsSaled', 'SaledAMT', 'SaledDate', 'IsPutOn', 'PutOnDate', 'PutDownDate', 'Depreciate', 'UserKind', 'IsSchool', 'CreateDate', 'UpdateDate', 'IsDeleted', 'IsCase', 'AddCaseTime', 'FromCaseType', 'CaseUserId', 'CaseUserName', 'CaseCarId', 'Shop_Id', 'CreateId', 'Customer_Id', 'Is_Top', 'Is_Show', 'Recommend', 'Car_Status', 'Pg_description', 'XS_description', 'Description', 'Sale_number', 'Safe_end', 'Safe_type', 'Out_colorInside_color', 'AuditStatus'];
 
     // 插入数据时忽略唯一索引
     public static function insertIgnore($array)
@@ -38,7 +37,7 @@ class Cars extends Model
         $a = new static();
         if ($a->timestamps) {
             $now                 = \Carbon\Carbon::now();
-            $array['created_at'] = $now;
+            $array['CreateDate'] = $now;
             $array['updated_at'] = $now;
         }
         DB::insert('INSERT IGNORE INTO ' . $a->table . ' (' . implode(',', array_keys($array)) .
@@ -49,8 +48,8 @@ class Cars extends Model
     public function addCondition($requestData, $is_self)
     {
 
-        if (!isset($requestData['is_show'])) {
-            $requestData['is_show'] = '';
+        if (!isset($requestData['Is_Show'])) {
+            $requestData['Is_Show'] = '';
         }
 
         $query = $this;
@@ -61,9 +60,9 @@ class Cars extends Model
 
                 if (Auth::user()->isMdLeader()) {
                     //店长
-                    $user_shop_id = Auth::user()->shop_id; //用户所属门店id
-                    // $this->where('shop_id', $user_shop_id);
-                    $query = $query->where('shop_id', $user_shop_id);
+                    $user_Shop_Id = Auth::user()->Shop_Id; //用户所属门店id
+                    // $this->where('Shop_Id', $user_Shop_Id);
+                    $query = $query->where('Shop_Id', $user_Shop_Id);
                 } else {
                     //店员
                     // $this->where('creater_id', Auth::id());
@@ -72,56 +71,56 @@ class Cars extends Model
             }
         }
 
-        if (!empty($requestData['car_code'])) {
+        if (!empty($requestData['Code'])) {
             //有车源编码选择
 
-            $query = $query->where('car_code', $requestData['car_code']);
+            $query = $query->where('Code', $requestData['Code']);
 
             return $query;
         }
 
-        //if(isset($requestData['car_status']) && $requestData['car_status'] != ''){
-        /*p($requestData['car_status']);
-        dd(empty($requestData['car_status']));*/
-        if (!empty($requestData['car_status']) || ($requestData['car_status'] == '0')) {
+        //if(isset($requestData['Car_Status']) && $requestData['Car_Status'] != ''){
+        /*p($requestData['Car_Status']);
+        dd(empty($requestData['Car_Status']));*/
+        if (!empty($requestData['Car_Status']) || ($requestData['Car_Status'] == '0')) {
             //有车源状态选项
-            if ($requestData['car_status'] == '1') {
+            if ($requestData['Car_Status'] == '1') {
 
                 $query = $query->where(function ($query) use ($requestData) {
 
-                    $query = $query->where('car_status', $requestData['car_status']);
-                    $query = $query->orWhere('car_status', '6');
+                    $query = $query->where('Car_Status', $requestData['Car_Status']);
+                    $query = $query->orWhere('Car_Status', '6');
                 });
             } else {
 
-                $query = $query->where('car_status', $requestData['car_status']);
+                $query = $query->where('Car_Status', $requestData['Car_Status']);
             }
         } else {
 
-            // $query = $query->whereIn('car_status', ['1', '2', '3', '4', '5', '6']);
+            // $query = $query->whereIn('Car_Status', ['1', '2', '3', '4', '5', '6']);
             if (!$is_self) {
                 //非自身车源
-                $query = $query->where('car_status', '1');
+                $query = $query->where('Car_Status', '1');
             }
         }
 
-        if (!empty($requestData['is_show']) || ($requestData['is_show'] == '0')) {
+        if (!empty($requestData['Is_Show']) || ($requestData['Is_Show'] == '0')) {
 
-            $query = $query->where('is_show', $requestData['is_show']);
+            $query = $query->where('Is_Show', $requestData['Is_Show']);
         }
 
-        if (!empty($requestData['gearbox'])) {
-            // dd($requestData['gearbox']);
+        if (!empty($requestData['Transmission'])) {
+            // dd($requestData['Transmission']);
             $query = $query->where(function ($query) use ($requestData) {
-                foreach ($requestData['gearbox'] as $key => $gear) {
-                    $query = $query->orWhere('gearbox', $gear);
+                foreach ($requestData['Transmission'] as $key => $gear) {
+                    $query = $query->orWhere('Transmission', $gear);
                 }
             });
         }
 
-        if (!empty($requestData['shop_id'])) {
+        if (!empty($requestData['Shop_Id'])) {
 
-            $query = $query->where('shop_id', $requestData['shop_id']);
+            $query = $query->where('Shop_Id', $requestData['Shop_Id']);
         }
 
         if (!empty($requestData['is_appraiser'])) {
@@ -129,33 +128,33 @@ class Cars extends Model
             $query = $query->where('is_appraiser', $requestData['is_appraiser']);
         }
 
-        if (!empty($requestData['sale_number'])) {
+        if (!empty($requestData['Sale_number'])) {
 
-            $query = $query->where('sale_number', $requestData['sale_number']);
+            $query = $query->where('Sale_number', $requestData['Sale_number']);
         }
 
-        if (!empty($requestData['out_color'])) {
+        if (!empty($requestData['Out_color'])) {
 
-            $query = $query->where('out_color', $requestData['out_color']);
+            $query = $query->where('Out_color', $requestData['Out_color']);
         }
 
-        if (!empty($requestData['capacity'])) {
+        if (!empty($requestData['Capacity'])) {
 
-            $query = $query->where('capacity', $requestData['capacity']);
+            $query = $query->where('Capacity', $requestData['Capacity']);
         }
 
-        if (!empty($requestData['category_type'])) {
+        if (!empty($requestData['CarType'])) {
 
-            $query = $query->where('categorey_type', $requestData['category_type']);
+            $query = $query->where('CarType', $requestData['CarType']);
         }
 
-        if (!empty($requestData['category_id'])) {
+        if (!empty($requestData['CarModel'])) {
 
-            $query = $query->where('category_id', $requestData['category_id']);
+            $query = $query->where('CarModel', $requestData['CarModel']);
         } else {
 
-            if (!empty($requestData['car_factory'])) {
-                $query = $query->where('car_factory', $requestData['car_factory']);
+            if (!empty($requestData['Factory'])) {
+                $query = $query->where('Factory', $requestData['Factory']);
             } else {
 
                 if (!empty($requestData['brand_id'])) {
@@ -164,28 +163,28 @@ class Cars extends Model
             }
         }
 
-        if (!empty($requestData['begin_mileage'])) {
-            $query = $query->where('mileage', '>=', $requestData['begin_mileage']);
+        if (!empty($requestData['begin_Mileage'])) {
+            $query = $query->where('Mileage', '>=', $requestData['begin_Mileage']);
         }
 
-        if (!empty($requestData['end_mileage'])) {
-            $query = $query->where('mileage', '<=', $requestData['end_mileage']);
+        if (!empty($requestData['end_Mileage'])) {
+            $query = $query->where('Mileage', '<=', $requestData['end_Mileage']);
         }
 
-        if (!empty($requestData['top_price'])) {
-            $query = $query->where('top_price', '<=', $requestData['top_price']);
+        if (!empty($requestData['SaleAMT'])) {
+            $query = $query->where('SaleAMT', '<=', $requestData['SaleAMT']);
         }
 
         if (!empty($requestData['bottom_price'])) {
-            $query = $query->where('top_price', '>=', $requestData['bottom_price']);
+            $query = $query->where('SaleAMT', '>=', $requestData['bottom_price']);
         }
 
         if (!empty($requestData['end_date'])) {
-            $query = $query->where('created_at', '<=', $requestData['end_date']);
+            $query = $query->where('CreateDate', '<=', $requestData['end_date']);
         }
 
         if (!empty($requestData['begin_date'])) {
-            $query = $query->where('created_at', '>=', $requestData['begin_date']);
+            $query = $query->where('CreateDate', '>=', $requestData['begin_date']);
         }
 
         if (!empty($requestData['need_follow'])) {
@@ -202,15 +201,15 @@ class Cars extends Model
      */
     public function scopeOsRecommend($query, $requestData)
     {
-        if (isset($requestData['top_price'])) {
-            $query = $query->where('top_price', '<=', $requestData['top_price']);
+        if (isset($requestData['SaleAMT'])) {
+            $query = $query->where('SaleAMT', '<=', $requestData['SaleAMT']);
         }
 
         if (isset($requestData['bottom_price'])) {
             $query = $query->where('bottom_price', '>=', $requestData['bottom_price']);
         }
 
-        $query = $query->where('car_status', '1');
+        $query = $query->where('Car_Status', '1');
         return $query;
     }
 
@@ -218,41 +217,41 @@ class Cars extends Model
     public function belongsToCategory()
     {
 
-        return $this->belongsTo('App\Category', 'cate_id', 'id')->select('id', 'name AS category_name');
+        return $this->belongsTo('App\Category', 'cate_id', 'id');
     }
 
     // 定义Shop表与Cars表一对多关系
     public function belongsToShop()
     {
 
-        return $this->belongsTo('App\Shop', 'shop_id', 'id')->select('id', 'city_id', 'name AS shop_name', 'address as shop_address', 'telephone as shop_tele');
+        return $this->belongsTo('App\Shop', 'Shop_Id', 'id');
     }
 
     // 定义User表与Cars表一对多关系
     public function belongsToUser()
     {
 
-        return $this->belongsTo('App\User', 'creater_id', 'id')->select('id as user_id', 'nick_name', 'telephone as creater_telephone');
+        return $this->belongsTo('App\User', 'CreateId', 'id');
     }
 
     // 定义customer表与Cars表一对多关系
     public function belongsToCustomer()
     {
 
-        return $this->belongsTo('App\Customer', 'customer_id', 'id')->select('id', 'name as customer_name', 'telephone as customer_telephone');
+        return $this->belongsTo('App\Customer', 'Customer_Id', 'id');
     }
 
     // 定义customer表与Area表一对多关系
     public function belongsToCity()
     {
 
-        return $this->belongsTo('App\Area', 'plate_city', 'id')->select('id', 'name as city_name');
+        return $this->belongsTo('App\Area', 'plate_city', 'id');
     }
 
     // 定义Car表与car_follow表一对多关系
     public function hasManyFollow()
     {
-        return $this->hasMany('App\CarFollow', 'car_id', 'id')->orderBy('created_at', 'DESC');
+        return $this->hasMany('App\CarFollow', 'car_id', 'id');
     }
 
     // 定义Car表与images表一对多关系
