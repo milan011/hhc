@@ -21,7 +21,7 @@ class Want extends Model
      * 定义可批量赋值字段
      * @var array
      */
-    protected $fillable = ['want_code', 'name', 'car_type', 'brand_id', 'categorey_id', 'car_factory', 'cate_id', 'capacity', 'gearbox', 'bottom_price', 'top_price', 'age', 'mileage', 'sale_number', 'out_color', 'inside_color', 'customer_id', 'creater_id', 'want_eara', 'remark', 'want_status', 'shop_id', 'is_top', 'recommend', 'xs_remark', 'alternate_car', 'alternate_car_another'];
+    protected $fillable = ['want_code', 'name', 'car_type', 'brand_id', 'categorey_name', 'car_factory', 'cate_id', 'capacity', 'gearbox', 'bottom_price', 'top_price', 'age', 'mileage', 'sale_number', 'out_color', 'inside_color', 'customer_id', 'creater_id', 'want_eara', 'remark', 'want_status', 'shop_id', 'is_top', 'recommend', 'xs_remark', 'alternate_car', 'alternate_car_another'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -117,20 +117,20 @@ class Want extends Model
             $query = $query->where('want_type', $requestData['category_type']);
         }
 
-        if (!empty($requestData['category_id'])) {
+        if (!empty($requestData['category_name'])) {
 
-            $query = $query->where('categorey_id', $requestData['category_id']);
+            $query = $query->where('categorey_name', $requestData['category_name']);
+        } /* else {
+
+        if (!empty($requestData['car_factory'])) {
+        $query = $query->where('car_factory', $requestData['car_factory']);
         } else {
 
-            if (!empty($requestData['car_factory'])) {
-                $query = $query->where('car_factory', $requestData['car_factory']);
-            } else {
-
-                if (!empty($requestData['brand_id'])) {
-                    $query = $query->where('brand_id', $requestData['brand_id']);
-                }
-            }
+        if (!empty($requestData['brand_id'])) {
+        $query = $query->where('brand_id', $requestData['brand_id']);
         }
+        }
+        }*/
 
         if (!empty($requestData['begin_mileage'])) {
             $query = $query->where('mileage', '>=', $requestData['begin_mileage']);
@@ -217,14 +217,14 @@ class Want extends Model
     public function belongsToShop()
     {
 
-        return $this->belongsTo('App\Shop', 'shop_id', 'id')->select('id', 'name AS shop_name');
+        return $this->belongsTo('App\Shop', 'shop_id', 'id');
     }
 
     // 定义User表与Want(客源）表一对多关系
     public function belongsToUser()
     {
 
-        return $this->belongsTo('App\User', 'creater_id', 'id')->select('id as user_id', 'nick_name', 'telephone as creater_telephone');
+        return $this->belongsTo('App\User', 'creater_id', 'id');
     }
 
     // 定义want表与want_follow表一对多关系
@@ -237,7 +237,7 @@ class Want extends Model
     public function belongsToCustomer()
     {
 
-        return $this->belongsTo('App\Customer', 'customer_id', 'id')->select('id', 'name as customer_name', 'telephone as customer_telephone');
+        return $this->belongsTo('App\Customer', 'customer_id', 'id');
     }
 
     // 定义Want表与chance表一对多关系

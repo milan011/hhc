@@ -80,7 +80,7 @@ export default {
             currentRole: 'adminDashboard',
             dialogVisible: false,
             rInfo: '反正我告诉你了',
-            activeName: 'five'
+            activeName: 'seven'
         }
     },
     computed: {

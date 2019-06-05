@@ -6,11 +6,12 @@ use App\Area;
 use App\Cars;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Http\Resources\Car\CarResource;
 //use App\Http\Requests\Cars\StoreCarsRequest;
 //use App\Http\Requests\Cars\UpdateCarsRequest;
-use App\Http\Resources\Car\CarResource;
 use App\Image;
 use App\Repositories\Car\CarRepositoryInterface;
+use App\Repositories\Image\ImageRepositoryInterface;
 use App\Repositories\Shop\ShopRepositoryInterface;
 use Auth;
 use Carbon;
@@ -21,13 +22,13 @@ use Illuminate\Http\Request;
 class CarController extends Controller
 {
     protected $car;
-    // protected $brands;
+    protected $image;
     protected $shop;
 
     public function __construct(
 
         CarRepositoryInterface $car,
-        // BrandRepositoryInterface $brands,
+        ImageRepositoryInterface $image,
         ShopRepositoryInterface $shop
     ) {
 
@@ -46,7 +47,8 @@ class CarController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-
+        /*$json = '["\u6392\u91cf[0.8L]\u4fee\u6539\u4e3a[\u4e0d\u9650]","\u9500\u552e\u63cf\u8ff0[B\u7ea7\u5ba2\u6237]\u4fee\u6539\u4e3a[A\u7ea7\u5ba2\u6237]"]';
+        dd(json_decode($json, true));*/
         // $all_top_brands        = $this->brands->getChildBrand(0);
         $request['car_status'] = '1';
         $request['is_show']    = '1';
@@ -204,7 +206,23 @@ class CarController extends Controller
      */
     public function storeImage(Request $request)
     {
-        //
+
+        // $response = $this->image->upload($carRequest->all());
+
+        $request['ImgUrl']     = '\\UploadFiles\\' . $request['Filename'];
+        $request['CreateDate'] = Carbon::now()->toDateTimeString();
+        // dd($request->all());
+        $response = Image::create($request->all());
+
+        // dd($response);
+
+        if ($response) {
+            //添加成功
+            return $this->baseSucceed($Data = $response, $Message = '添加图片成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -247,7 +265,7 @@ class CarController extends Controller
             'status'      => 1,
             'msg'         => '添加成功',
             'content'     => $request->input('content'),
-            'follow_time' => date('Y-m-d, H:i:s', time()),
+            'follow_time' => date('Y - m - d, H:i:s', time()),
         ));
     }
 
@@ -261,13 +279,13 @@ class CarController extends Controller
     {
         $cars = $this->car->find($id);
 
-        $gearbox       = config('tcl.gearbox'); //获取配置文件中变速箱类别
-        $out_color     = config('tcl.out_color'); //获取配置文件中外观颜色
-        $capacity      = config('tcl.capacity'); //获取配置文件排量
-        $category_type = config('tcl.category_type'); //获取配置文件中车型类别
+        $gearbox       = config('tcl . gearbox'); //获取配置文件中变速箱类别
+        $out_color     = config('tcl . out_color'); //获取配置文件中外观颜色
+        $capacity      = config('tcl . capacity'); //获取配置文件排量
+        $category_type = config('tcl . category_type'); //获取配置文件中车型类别
 
         // dd($cars->hasManyImages()->get());
-        return view('admin.car.show', compact('cars', 'gearbox', 'out_color', 'capacity', 'category_type'));
+        return view('admin . car . show', compact('cars', 'gearbox', 'out_color', 'capacity', 'category_type'));
     }
 
     /**
@@ -290,7 +308,7 @@ class CarController extends Controller
             ->get();
         /*if (Gate::denies('update', $cars)) {
         //不允许编辑,基于Policy
-        dd('no no');
+        dd('nono');
         }*/
 
         foreach ($area as $key => $value) {
@@ -307,7 +325,7 @@ class CarController extends Controller
         // dd($cars);
         // dd($area);
         // dd($city);
-        return view('admin.car.edit', compact(
+        return view('admin . car . edit', compact(
             'cars', 'provence', 'city', 'area'
         ));
     }
@@ -323,21 +341,21 @@ class CarController extends Controller
         $car  = $this->car->find($id);
         $imgs = $car->hasManyImages;
 
-        /*$out_color      = config('tcl.out_color'); //获取配置文件中外观颜色
-        $inside_color   = config('tcl.inside_color'); //获取配置文件中内饰颜色
-        $sale_number    = config('tcl.sale_number'); //获取配置文件中过户次数
-        $car_type       = config('tcl.car_type'); //获取配置文件车源类型
-        $customer_res   = config('tcl.customer_res'); //获取配置文件客户来源
-        $safe_type      = config('tcl.safe_type'); //获取配置文件保险类别
-        $capacity       = config('tcl.capacity'); //获取配置文件排量*/
+        /*$out_color      = config('tcl . out_color'); //获取配置文件中外观颜色
+        $inside_color   = config('tcl . inside_color'); //获取配置文件中内饰颜色
+        $sale_number    = config('tcl . sale_number'); //获取配置文件中过户次数
+        $car_type       = config('tcl . car_type'); //获取配置文件车源类型
+        $customer_res   = config('tcl . customer_res'); //获取配置文件客户来源
+        $safe_type      = config('tcl . safe_type'); //获取配置文件保险类别
+        $capacity       = config('tcl . capacity'); //获取配置文件排量*/
 
         /*if (Gate::denies('update', $cars)) {
         //不允许编辑,基于Policy
-        dd('no no');
+        dd('nono');
         }*/
 
         // dd($imgs);
-        return view('admin.car.editImg', compact(
+        return view('admin . car . editImg', compact(
             'imgs', 'car'
         ));
     }
@@ -349,11 +367,11 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateInfo(UpdateCarsRequest $carRequest, $id)
+    public function updateInfo(Request $carRequest, $id)
     {
-        // dd($carRequest->all());
+        dd($carRequest->all());
         $this->car->update($carRequest, $id);
-        return redirect()->route('admin.car.self')->withInput();
+        return redirect()->route('admin . car . self')->withInput();
     }
 
     /**
@@ -363,11 +381,11 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateImage(UpdateCarsRequest $carRequest, $id)
+    public function deleteImage(Request $carRequest, $id)
     {
         // dd($carRequest->all());
         $this->car->update($carRequest, $id);
-        return redirect()->route('admin.car.self')->withInput();
+        return redirect()->route('admin . car . self')->withInput();
     }
 
     /**
@@ -436,7 +454,7 @@ class CarController extends Controller
             //激活车源
             if ($this->car->repeatCarNum($car->vin_code) > 0) {
 
-                $msg = '已存在该车架号,无法激活';
+                $msg = '已存在该车架号, 无法激活';
             } else {
                 $this->car->statusChange($request, $request->input('id'));
                 $msg = '车源已经激活';
@@ -488,17 +506,17 @@ class CarController extends Controller
      */
     public function getCarInfo(Request $request)
     {
-        $year_type      = config('tcl.year_type'); //获取配置文件中所有车款年份
-        $category_type  = config('tcl.category_type'); //获取配置文件中车型类别
-        $gearbox        = config('tcl.gearbox'); //获取配置文件中车型类别
-        $out_color      = config('tcl.out_color'); //获取配置文件中外观颜色
-        $inside_color   = config('tcl.inside_color'); //获取配置文件中内饰颜色
-        $sale_number    = config('tcl.want_sale_number'); //获取配置文件中过户次数
-        $customer_res   = config('tcl.customer_res'); //获取配置文件客户来源
-        $safe_type      = config('tcl.safe_type'); //获取配置文件保险类别
-        $capacity       = config('tcl.capacity'); //获取配置文件排量
-        $mileage_config = config('tcl.mileage'); //获取配置文件中车源状态
-        $car_age        = config('tcl.age'); //获取配置文件中车源状态
+        $year_type      = config('tcl . year_type'); //获取配置文件中所有车款年份
+        $category_type  = config('tcl . category_type'); //获取配置文件中车型类别
+        $gearbox        = config('tcl . gearbox'); //获取配置文件中车型类别
+        $out_color      = config('tcl . out_color'); //获取配置文件中外观颜色
+        $inside_color   = config('tcl . inside_color'); //获取配置文件中内饰颜色
+        $sale_number    = config('tcl . want_sale_number'); //获取配置文件中过户次数
+        $customer_res   = config('tcl . customer_res'); //获取配置文件客户来源
+        $safe_type      = config('tcl . safe_type'); //获取配置文件保险类别
+        $capacity       = config('tcl . capacity'); //获取配置文件排量
+        $mileage_config = config('tcl . mileage'); //获取配置文件中车源状态
+        $car_age        = config('tcl . age'); //获取配置文件中车源状态
 
         $car = $this->car->find($request->input('car_id'));
         // dd(substr((date($car->created_at)), 0, 10));
@@ -560,7 +578,7 @@ class CarController extends Controller
             $img->save();
 
             Image::where('car_id', $request->img_car_id)
-                ->where('id', '!=', $img->id)
+                ->where('id', ' != ', $img->id)
                 ->update(['is_top' => '0']);
             // dd($img);
         });
@@ -577,13 +595,13 @@ class CarController extends Controller
 
         // dd($request->method());
         $now         = Carbon::today(); //当前日期对象
-        $waster_date = $now->modify('-15 days');
+        $waster_date = $now->modify('-15days');
 
         // dd($waster_date);
         // dd($now);
         $cars = DB::table('tcl_cars')
-            ->where('tcl_cars.updated_at', '<=', $waster_date)
-            ->where('tcl_cars.car_status', '1')
+            ->where('tcl_cars . updated_at', ' <= ', $waster_date)
+            ->where('tcl_cars . car_status', '1')
             ->update(['car_status' => '0']);
     }
 
@@ -591,8 +609,8 @@ class CarController extends Controller
     public function carAnalysed()
     {
 
-        $begin_date = '2017-02-10';
-        $end_date   = '2017-12-20';
+        $begin_date = '2017 - 02 - 10';
+        $end_date   = '2017 - 12 - 20';
 
         //车源搜索列
         // $select_columns_car = ['id', 'name', 'car_code', 'vin_code', 'capacity', 'top_price', 'plate_date', 'plate_end', 'mileage', 'age', 'out_color', 'inside_color', 'gearbox', 'plate_provence', 'plate_city', 'safe_end', 'sale_number', 'categorey_type', 'shop_id', 'creater_id', 'created_at', 'updated_at', 'description', 'bottom_price', 'safe_type','recommend', 'is_top', 'car_type', 'car_status', 'customer_id', 'guide_price', 'pg_description','xs_description', 'cate_id', 'appraiser_price', 'is_appraiser', 'appraiser_at'];
@@ -602,21 +620,21 @@ class CarController extends Controller
 
         //车源搜索条件
         $query_cars = new Cars();
-        // $query_cars = $query_cars->select(DB::raw('count(*) as car_count'));
+        // $query_cars = $query_cars->select(DB::raw('count( * ) as car_count'));
         /*$query_cars = $query_cars->where('brand_id', '1');
-        $query_cars = $query_cars->where('created_at', '<=', $end_date);
-        $query_cars = $query_cars->where('created_at', '>=', $begin_date);
+        $query_cars = $query_cars->where('created_at', ' <= ', $end_date);
+        $query_cars = $query_cars->where('created_at', ' >= ', $begin_date);
 
         $cars_nums = $query_cars->select($select_columns_car)->get();*/
 
         foreach ($all_top_brands as $key => $value) {
 
             $cars_nums = DB::table('tcl_cars')
-                ->join('tcl_brand', 'tcl_cars.brand_id', '=', 'tcl_brand.id')
-                ->select(DB::raw('count(*) as car_count, brand_id, tcl_brand.name as bname'))
+                ->join('tcl_brand', 'tcl_cars . brand_id', ' = ', 'tcl_brand . id')
+                ->select(DB::raw('count( * ) as car_count, brand_id, tcl_brand . name as bname'))
                 ->where('brand_id', $value->id)
-                ->where('tcl_cars.created_at', '<=', $end_date)
-                ->where('tcl_cars.created_at', '>=', $begin_date)
+                ->where('tcl_cars . created_at', ' <= ', $end_date)
+                ->where('tcl_cars . created_at', ' >= ', $begin_date)
                 ->groupBy('brand_id')
                 ->get();
 
@@ -635,8 +653,8 @@ class CarController extends Controller
         }
 
         $category_list = DB::table('tcl_cars')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->groupBy('category_id')
             ->get();
 
@@ -647,11 +665,11 @@ class CarController extends Controller
         foreach ($list_a as $key => $value) {
 
             $cars_nums = DB::table('tcl_cars')
-                ->join('tcl_brand', 'tcl_cars.category_id', '=', 'tcl_brand.id')
-                ->select(DB::raw('count(*) as car_count, category_id, tcl_brand.name as bname'))
+                ->join('tcl_brand', 'tcl_cars . category_id', ' = ', 'tcl_brand . id')
+                ->select(DB::raw('count( * ) as car_count, category_id, tcl_brand . name as bname'))
                 ->where('category_id', $value)
-                ->where('tcl_cars.created_at', '<=', $end_date)
-                ->where('tcl_cars.created_at', '>=', $begin_date)
+                ->where('tcl_cars . created_at', ' <= ', $end_date)
+                ->where('tcl_cars . created_at', ' >= ', $begin_date)
                 ->get();
 
             if (!collect($cars_nums)->isEmpty()) {
@@ -672,10 +690,10 @@ class CarController extends Controller
         // dd($cate_num);
 
         //排量
-        $capacity      = config('tcl.capacity'); //获取配置文件排量
+        $capacity      = config('tcl . capacity'); //获取配置文件排量
         $capacity_list = DB::table('tcl_cars')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->groupBy('capacity')
             ->get();
 
@@ -686,10 +704,10 @@ class CarController extends Controller
         foreach ($list_c as $key => $value) {
 
             $cars_nums = DB::table('tcl_cars')
-                ->select(DB::raw('count(*) as car_count, capacity'))
+                ->select(DB::raw('count( * ) as car_count, capacity'))
                 ->where('capacity', $value)
-                ->where('tcl_cars.created_at', '<=', $end_date)
-                ->where('tcl_cars.created_at', '>=', $begin_date)
+                ->where('tcl_cars . created_at', ' <= ', $end_date)
+                ->where('tcl_cars . created_at', ' >= ', $begin_date)
                 ->get();
             // dd($cars_nums);
             if (!collect($cars_nums)->isEmpty()) {
@@ -710,10 +728,10 @@ class CarController extends Controller
         // dd($capa_num);
         //
         //颜色
-        $out_color      = config('tcl.out_color'); //获取配置文件排量
+        $out_color      = config('tcl . out_color'); //获取配置文件排量
         $out_color_list = DB::table('tcl_cars')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->groupBy('out_color')
             ->get();
         // dd($out_color_list);
@@ -724,10 +742,10 @@ class CarController extends Controller
         foreach ($list_color as $key => $value) {
 
             $cars_nums = DB::table('tcl_cars')
-                ->select(DB::raw('count(*) as car_count, out_color'))
+                ->select(DB::raw('count( * ) as car_count, out_color'))
                 ->where('out_color', $value)
-                ->where('tcl_cars.created_at', '<=', $end_date)
-                ->where('tcl_cars.created_at', '>=', $begin_date)
+                ->where('tcl_cars . created_at', ' <= ', $end_date)
+                ->where('tcl_cars . created_at', ' >= ', $begin_date)
                 ->get();
             // dd($cars_nums);
             if (!collect($cars_nums)->isEmpty()) {
@@ -749,21 +767,21 @@ class CarController extends Controller
 
         //车龄分析
         $cars_nums_age = DB::table('tcl_cars')
-            ->select(DB::raw('count(*) as car_count'))
-            ->where('age', '>=', '0')
-            ->where('age', '<=', '5')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->select(DB::raw('count( * ) as car_count'))
+            ->where('age', ' >= ', '0')
+            ->where('age', ' <= ', '5')
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->get();
         // dd($cars_nums_age);
 
         //行驶里程分析
         $cars_nums_miliage = DB::table('tcl_cars')
-            ->select(DB::raw('count(*) as car_count'))
-            ->where('mileage', '>', '10')
-            ->where('mileage', '<=', '10')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->select(DB::raw('count( * ) as car_count'))
+            ->where('mileage', ' > ', '10')
+            ->where('mileage', ' <= ', '10')
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->get();
         $car_bili                   = $cars_nums_miliage[0]->car_count / 3688;
         $cars_nums_miliage[0]->bili = $car_bili;
@@ -771,11 +789,11 @@ class CarController extends Controller
 
         //价格分析
         $cars_nums_price = DB::table('tcl_cars')
-            ->select(DB::raw('count(*) as car_count'))
-            ->where('top_price', '>', '20')
-        // ->where('top_price', '<=', '20')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->select(DB::raw('count( * ) as car_count'))
+            ->where('top_price', ' > ', '20')
+        // ->where('top_price', ' <= ', '20')
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->get();
         $car_price_bili           = $cars_nums_price[0]->car_count / 3688;
         $cars_nums_price[0]->bili = $car_price_bili;
@@ -783,8 +801,8 @@ class CarController extends Controller
 
         //门店分析
         $shop_list = DB::table('tcl_cars')
-            ->where('tcl_cars.created_at', '<=', $end_date)
-            ->where('tcl_cars.created_at', '>=', $begin_date)
+            ->where('tcl_cars . created_at', ' <= ', $end_date)
+            ->where('tcl_cars . created_at', ' >= ', $begin_date)
             ->groupBy('shop_id')
             ->get();
 
@@ -795,11 +813,11 @@ class CarController extends Controller
         foreach ($list_shop as $key => $value) {
 
             $cars_nums = DB::table('tcl_cars')
-                ->join('tcl_shop', 'tcl_cars.shop_id', '=', 'tcl_shop.id')
-                ->select(DB::raw('count(*) as car_count, shop_id, tcl_shop.name as shop_name'))
+                ->join('tcl_shop', 'tcl_cars . shop_id', ' = ', 'tcl_shop . id')
+                ->select(DB::raw('count( * ) as car_count, shop_id, tcl_shop . name as shop_name'))
                 ->where('shop_id', $value)
-                ->where('tcl_cars.created_at', '<=', $end_date)
-                ->where('tcl_cars.created_at', '>=', $begin_date)
+                ->where('tcl_cars . created_at', ' <= ', $end_date)
+                ->where('tcl_cars . created_at', ' >= ', $begin_date)
                 ->get();
 
             if (!collect($cars_nums)->isEmpty()) {
@@ -821,11 +839,11 @@ class CarController extends Controller
 
         //月份分析
         $cars_nums_month = DB::table('tcl_cars')
-            ->select(DB::raw('count(*) as car_count'))
-            ->where('creater_id', '!=', '1')
-            ->where('name', '!=', '')
-            ->where('tcl_cars.created_at', '>=', '2017-12-01')
-            ->where('tcl_cars.created_at', '<=', '2017-12-31')
+            ->select(DB::raw('count( * ) as car_count'))
+            ->where('creater_id', ' != ', '1')
+            ->where('name', ' != ', '')
+            ->where('tcl_cars . created_at', ' >= ', '2017 - 12 - 01')
+            ->where('tcl_cars . created_at', ' <= ', '2017 - 12 - 31')
             ->get();
         $car_month_bili = $cars_nums_month[0]->car_count / 3688;
         // dd($cars_nums_month[0]->car_count  / 3688);

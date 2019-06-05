@@ -42,6 +42,32 @@ function getLastSql()
     });
 }
 
+/**
+ * 获得车源、销售机会、求购,贷款编号
+ */
+function getCarCode($type = 'car')
+{
+    // 车源编号为Unix时间戳后9位
+    if ($type == 'car') {
+        $code = 'C-';
+    } else if ($type == 'want') {
+        $code = 'Q-';
+    } else if ($type == 'chance') {
+        $code = 'J-';
+    } elseif ($type == 'loan') {
+        $code = 'D-';
+    } elseif ($type == 'insurance') {
+        $code = 'B-';
+    }
+
+    $date = (string) (time());
+    $date = substr($date, 1);
+
+    $code .= $date;
+
+    return $code;
+}
+
 //二维数组去掉重复值
 function a_array_unique($array)
 {

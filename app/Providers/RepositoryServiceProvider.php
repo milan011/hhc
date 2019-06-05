@@ -50,5 +50,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\Repositories\Customer\CustomerRepositoryInterface', 'App\Repositories\Customer\CustomerRepository');
         $this->app->bind('App\Repositories\Loan\LoanRepositoryInterface', 'App\Repositories\Loan\LoanRepository');
         $this->app->bind('App\Repositories\Transcation\TranscationRepositoryInterface', 'App\Repositories\Transcation\TranscationRepository');
+        $this->app->bind('App\Repositories\Image\ImageRepositoryInterface', 'App\Repositories\Image\ImageRepository');
     }
 }

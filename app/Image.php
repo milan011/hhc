@@ -15,8 +15,17 @@ class Image extends Model
      * @var string
      */
     // protected $table = 'users';
-    protected $table      = 'smx_enterprise_carimages';
+    protected $table      = 'hf_imginfos';
     protected $primaryKey = 'id';
+
+    /**
+     * 表明模型是否应该被打上时间戳
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $fillable = ['ID', 'CarId', 'Filename', 'ImgUrl', 'Name', 'ImgType', 'CreateDate', 'IsDelete', 'Sort'];
 
     public static $rules = [
         'file' => 'required|mimes:png,gif,jpeg,jpg,bmp',
@@ -37,6 +46,6 @@ class Image extends Model
     // 定义Images表与Cars表一对多关系
     public function belongsToCars()
     {
-        return $this->hasMany('App\Cars', 'car_id', 'id');
+        return $this->hasMany('App\Cars', 'CarId', 'id');
     }
 }

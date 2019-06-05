@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\Want\StoreWantRequest;
 use App\Http\Requests\Want\UpdateWantRequest;
+use App\Http\Resources\Want\WantResource;
 // use App\Repositories\Brand\BrandRepositoryInterface;
 use App\Repositories\Shop\ShopRepositoryInterface;
 use App\Repositories\Want\WantRepositoryInterface;
@@ -47,13 +48,12 @@ class WantController extends Controller
         $wants                  = $this->want->getAllWants($request);
         // dd(lastSql());
         // dd($wants);
-        $all_top_brands = $this->brands->getChildBrand(0);
-        $shops          = $this->shop->getShopsInProvence('10');
+        // $all_top_brands = $this->brands->getChildBrand(0);
+        // $shops          = $this->shop->getShopsInProvence('10');
         // dd($request->all());
         $want_status_current = '1';
-        $select_conditions   = $request->all();
-
-        return view('admin.want.index', compact('wants', 'shops', 'want_status_current', 'all_top_brands', 'select_conditions'));
+        // $select_conditions   = $request->all();
+        return new WantResource($wants);
     }
 
     /**
@@ -115,12 +115,21 @@ class WantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreWantRequest $wantRequest)
+    public function store(Request $wantRequest)
     {
         // dd($wantRequest->all());
-        $getInsertedId = $this->want->create($wantRequest);
+        $want = $this->want->create($wantRequest);
         // p(lastSql());exit;
-        return redirect()->route('admin.want.self')->withInput();
+        // dd($want);
+        // $want->belongsToShop;
+        $want->belongsToUser;
+        if ($want) {
+            //添加成功
+            return $this->baseSucceed($Data = $want, $Message = '添加求购成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -141,25 +150,6 @@ class WantController extends Controller
             'content'     => $request->input('content'),
             'follow_time' => date('Y-m-d, H:i:s', time()),
         ));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $wants = $this->want->find($id);
-
-        /*$gearbox        = config('tcl.gearbox'); //获取配置文件中变速箱类别
-        $out_color      = config('tcl.out_color'); //获取配置文件中外观颜色
-        $capacity       = config('tcl.capacity'); //获取配置文件排量
-        $category_type  = config('tcl.category_type'); //获取配置文件中车型类别*/
-
-        // dd($wants);
-        return view('admin.want.show', compact('wants'));
     }
 
     /**
@@ -278,7 +268,7 @@ class WantController extends Controller
      * ajax获得求购信息
      * @return \Illuminate\Http\Response
      */
-    public function getWantInfo(Request $request)
+    public function show(Request $request)
     {
         $year_type      = config('tcl.year_type'); //获取配置文件中所有车款年份
         $category_type  = config('tcl.category_type'); //获取配置文件中车型类别

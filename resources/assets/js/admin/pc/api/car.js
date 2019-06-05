@@ -24,7 +24,8 @@ export function getCarInfo(data, token = getToken()) {
 export function carTouch(data, token = getToken()) {
     return request({
         url: ROAST_CONFIG.API_URL + '/carTouch/' + data.id,
-        method: 'get',
+        method: 'post',
+        data,
         params: { token },
     })
 }
@@ -49,16 +50,16 @@ export function carImageAdd(data, token = getToken()) {
 
 export function carInfoUpdate(data) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/carInfoUpdate/' + data.id,
+        url: ROAST_CONFIG.API_URL + '/carInfoUpdate/' + data.ID,
         method: 'put',
         params: { token },
         data
     })
 }
 
-export function carImageUpdate(data) {
+export function carImageDelete(data) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/carImageUpdate/' + data.id,
+        url: ROAST_CONFIG.API_URL + '/carImageDelete/' + data.ID,
         method: 'put',
         params: { token },
         data

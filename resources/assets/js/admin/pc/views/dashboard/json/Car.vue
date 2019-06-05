@@ -54,14 +54,14 @@
         </el-dropdown>
         <el-dropdown trigger="click">
             <el-button type="primary">
-                车源图片修改<i class="el-icon-arrow-down el-icon--right"></i>
+                车源图片删除<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item icon="el-icon-plus">
-                    <el-button type="primary" @click="carImageUpdateCommit">提交Json</el-button>
+                    <el-button type="primary" @click="carImageDeleteCommit">提交Json</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item icon="el-icon-circle-plus">
-                    <el-button type="primary" @click="carImageUpdateReturn">返回Json</el-button>
+                    <el-button type="primary" @click="carImageDeleteReturn">返回Json</el-button>
                 </el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
@@ -146,7 +146,7 @@
     </div>
 </template>
 <script>
-import { getCarList, getCarInfo, carTouch, carInfoAdd, carImageAdd, carInfoUpdate, carImageUpdate, carSaleOrUnsale, carFollow, carTrans, carPingGu, } from '@adminPc/api/car'
+import { getCarList, getCarInfo, carTouch, carInfoAdd, carImageAdd, carInfoUpdate, carImageDelete, carSaleOrUnsale, carFollow, carTrans, carPingGu, } from '@adminPc/api/car'
 //import { parseTime } from '@/utils'
 //import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@/config.js'
 import { TOKEN } from '@adminPc/tokenConfig.js'
@@ -217,7 +217,7 @@ export default {
             const carInfo = {
                 "ID": undefined,
                 "Code": "SH_20190409125306_18",
-                "VIN": "LVSFCAMEX8F265694",
+                "VIN": "LVSFCAMEX8FFF5694",
                 "Area": "苏J",
                 "PlateNum": "苏JAY888",
                 "BuyDate": "1900-01-01 00:00:00",
@@ -284,7 +284,7 @@ export default {
             const carInfo = {
                 "ID": undefined,
                 "Code": "SH_20190409125306_18",
-                "VIN": "LVSFCAME28F262624",
+                "VIN": "LVSFCAMEFFF262624",
                 "Area": "苏J",
                 "PlateNum": "苏JAY888",
                 "BuyDate": "1900-01-01 00:00:00",
@@ -353,22 +353,191 @@ export default {
             })
         },
         carImageAddCommit() {
-            alert('车源图片添加提交Json')
+            const carImg = {
+                "CarId": 96, //车源ID
+                "Filename": "SH_20190409125306_18.jpg", //图片文件名称
+                "Name": "身份证正面", //图片内容
+                "ImgType": "1", //图片类型：1：证件2：车辆照片
+                "Sort": "1", //图片顺序
+            }
+            this.$emit("showJson", carImg)
+            this.$emit("showDialog", true)
         },
         carImageAddReturn() {
-            alert('车源图片添加返回Json')
+            const carImg = {
+                "CarId": 96, //车源ID
+                "Filename": "SH_20190409125306_18.jpg", //图片文件名称
+                "Name": "身份证正面", //图片内容
+                "ImgType": "1", //图片类型：1：证件2：车辆照片
+                "Sort": "1", //图片顺序
+            }
+            carImageAdd(carImg).then(response => {
+                // console.log(response.data)
+                // return false
+                const carImg = response.data
+
+                this.$emit("showJson", carImg)
+                this.$emit("showDialog", true)
+            })
         },
         carInfoUpdateCommit() {
-            alert('车源信息修改提交Json')
+           const carInfo = {
+                "ID": 96,
+                "Code": "SH_20190409125306_18",
+                "VIN": "LVSFCAMEX8FFF5694",
+                "Area": "苏J",
+                "PlateNum": "苏JAY888",
+                "BuyDate": "1900-01-01 00:00:00",
+                "FullName": "福克斯 两厢 2007款 1.8L MT 舒适版",
+                "Factory": "长安福特",
+                "CarModel": "福克斯 两厢",
+                "CarType": "紧凑型车",
+                "CarYear": "准新车",
+                "InitPrice": "12.38",
+                "ImportType": "国产",
+                "MakeDate": null,
+                "Emission": "国IV",
+                "Transmission": "手动变速器",
+                "Capacity": "1.8L",
+                "CapacityNum": 0,
+                "Status": 3,
+                "EvalAMT": "12",
+                "HfEvalById": 18,
+                "XnEvalById": 18,
+                "XnDate": "2019-04-09 12:53:48",
+                "JzEvalById": 18,
+                "EvalDate": "2019-04-09 12:54:10",
+                "SaleAMT": "5.00",
+                "IsSaled": 0,
+                "SaledAMT": "0.00",
+                "SaledDate": null,
+                "IsPutOn": 0,
+                "PutOnDate": "2019-04-09 12:54:30",
+                "PutDownDate": null,
+                "Depreciate": "0",
+                "UserKind": 1,
+                "IsSchool": 1,
+                "CreateDate": "2019-04-09 12:53:07",
+                "UpdateDate": "2019-04-09 12:53:07",
+                "IsDeleted": 0,
+                "IsCase": 1,
+                "AddCaseTime": "2019-05-14 11:43:10",
+                "FromCaseType": 1,
+                "CaseUserId": "18",
+                "CaseUserName": "111",
+                "CaseCarId": null,
+                "Shop_Id": null,
+                "CreateId": null,
+                "Customer_Id": null,
+                "Is_Top": null,
+                "Is_Show": null,
+                "Recommend": null,
+                "Car_Status": "1",
+                "Pg_description": "",
+                "XS_description": null,
+                "Description": null,
+                "Sale_number": 0,
+                "Safe_end": "",
+                "Safe_type": "1",
+                "Out_color": "3",
+                "Inside_color": null,
+                "AuditStatus": null,
+            }
+
+            this.$emit("showJson", carInfo)
+            this.$emit("showDialog", true)
         },
         carInfoUpdateReturn() {
-            alert('车源信息修改返回Json')
+          const carInfo = {
+                "ID": 96,
+                "Code": "SH_20190409125306_18",
+                "VIN": "LVSFCAMEFFF262624",
+                "Area": "苏J",
+                "PlateNum": "苏JAY888",
+                "BuyDate": "1900-01-01 00:00:00",
+                "FullName": "福克斯 两厢 2007款 1.8L MT 舒适版",
+                "Factory": "长安福特",
+                "CarModel": "福克斯 两厢",
+                "CarType": "紧凑型车",
+                "CarYear": "准新车",
+                "InitPrice": "12.38",
+                "ImportType": "国产",
+                "MakeDate": null,
+                "Emission": "国IV",
+                "Transmission": "手动变速器",
+                "Capacity": "1.8L",
+                "CapacityNum": 0,
+                "Status": 3,
+                "EvalAMT": "12",
+                "HfEvalById": 18,
+                "XnEvalById": 18,
+                "XnDate": "2019-04-09 12:53:48",
+                "JzEvalById": 18,
+                "EvalDate": "2019-04-09 12:54:10",
+                "SaleAMT": "5.00",
+                "IsSaled": 0,
+                "SaledAMT": "0.00",
+                "SaledDate": null,
+                "IsPutOn": 0,
+                "PutOnDate": "2019-04-09 12:54:30",
+                "PutDownDate": null,
+                "Depreciate": "0",
+                "UserKind": 1,
+                "IsSchool": 1,
+                "CreateDate": "2019-04-09 12:53:07",
+                "UpdateDate": "2019-04-09 12:53:07",
+                "IsDeleted": 0,
+                "IsCase": 1,
+                "AddCaseTime": "2019-05-14 11:43:10",
+                "FromCaseType": 1,
+                "CaseUserId": "18",
+                "CaseUserName": "111",
+                "CaseCarId": null,
+                "Shop_Id": null,
+                "CreateId": null,
+                "Customer_Id": null,
+                "Is_Top": null,
+                "Is_Show": null,
+                "Recommend": null,
+                "Car_Status": "1",
+                "Pg_description": "",
+                "XS_description": null,
+                "Description": null,
+                "Sale_number": 0,
+                "Safe_end": "",
+                "Safe_type": "1",
+                "Out_color": "3",
+                "Inside_color": null,
+                "AuditStatus": null,
+            }
+            carInfoUpdate(carInfo).then(response => {
+                // console.log(response.data)
+                // return false
+                const car = response.data
+
+                this.$emit("showJson", car)
+                this.$emit("showDialog", true)
+            })
         },
-        carImageUpdateCommit() {
-            alert('车源图片修改提交Json')
+        carImageDeleteCommit() {
+           const carImg = {
+                "ID" : 96,
+            }
+            this.$emit("showJson", carImg)
+            this.$emit("showDialog", true)
         },
-        carImageUpdateReturn() {
-            alert('车源图片修改返回Json')
+        carImageDeleteReturn() {
+           const carImg = {
+               "ID" : 96,
+            }
+            carImageDelete(carInfo).then(response => {
+                // console.log(response.data)
+                // return false
+                const car = response.data
+
+                this.$emit("showJson", car)
+                this.$emit("showDialog", true)
+            })
         },
         carSaleOrUnsaleCommit() {
             alert('车源上/下架提交Json')

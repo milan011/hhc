@@ -15,6 +15,19 @@
             </el-dropdown>
             <el-dropdown trigger="click">
                 <el-button type="primary">
+                  交易添加<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-plus">
+                       <el-button type="primary" @click="transAddCommit" >提交Json</el-button>
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-circle-plus">
+                        <el-button type="primary" @click="transAddReturn" >返回Json</el-button>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown trigger="click">
+                <el-button type="primary">
                   交易详情<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">

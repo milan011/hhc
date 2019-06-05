@@ -17,7 +17,7 @@ use Session;
 class WantRepository implements WantRepositoryInterface
 {
     //默认查询数据
-    protected $select_columns = ['id', 'want_code', 'name', 'want_type', 'brand_id', 'categorey_id', 'car_factory', 'cate_id', 'capacity', 'gearbox', 'bottom_price', 'top_price', 'age', 'mileage', 'sale_number', 'out_color', 'inside_color', 'customer_id', 'creater_id', 'want_area', 'remark', 'want_status', 'shop_id', 'created_at', 'updated_at', 'recommend', 'is_top', 'xs_remark', 'alternate_car', 'alternate_car_another'];
+    protected $select_columns = ['id', 'want_code', 'name', 'want_type', 'categorey_name', 'gearbox', 'bottom_price', 'top_price', 'customer_id', 'creater_id', 'remark', 'want_status', 'shop_id', 'created_at', 'updated_at', 'xs_remark', 'alternate_car', 'alternate_car_another'];
 
     // 求购信息表列名称-注释对应
     protected $columns_annotate = [
@@ -74,7 +74,7 @@ class WantRepository implements WantRepositoryInterface
         $query = $query->osRecommend($request->all());
         }*/
 
-        return $query->select($this->select_columns)
+        return $query->with('belongsToShop', 'belongsToUser')->select($this->select_columns)
             ->orderBy('created_at', 'DESC')
             ->paginate(20);
     }
@@ -82,7 +82,9 @@ class WantRepository implements WantRepositoryInterface
     // 创建求购信息
     public function create($requestData)
     {
-        DB::transaction(function () use ($requestData) {
+        DB::beginTransaction();
+        try {
+
             // 添加求购信息并返回实例
             $requestData['creater_id'] = Auth::id();
             $requestData['want_code']  = getCarCode('want');
@@ -122,7 +124,11 @@ class WantRepository implements WantRepositoryInterface
             $follow_info->save();
 
             return $want;
-        });
+        } catch (\Exception $e) {
+            throw $e;
+            DB::rollBack();
+            return false;
+        }
     }
 
     // 修改求购信息

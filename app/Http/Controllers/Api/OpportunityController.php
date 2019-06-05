@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Area;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
-use App\Http\Requests\CustomerSale\StoreCustomerSaleRequest;
+// use App\Http\Requests\CustomerOpportunity\StoreCustomerOpportunityRequest;
 use App\Image;
-use App\Repositories\Sale\SaleRepositoryInterface;
+use App\Repositories\Opportunity\OpportunityRepositoryInterface;
 use App\Shop;
 use Auth;
 use DB;
@@ -20,12 +20,12 @@ class OpportunityController extends Controller
 
     public function __construct(
 
-        SaleRepositoryInterface $customerCar,
-        SaleRepositoryInterface $sale
+        OpportunityRepositoryInterface $customerCar,
+        OpportunityRepositoryInterface $opportunity
     ) {
 
         $this->customerCar = $customerCar;
-        $this->sale        = $sale;
+        $this->opportunity = $opportunity;
 
         // $this->middleware('brand.create', ['only' => ['create']]);
     }
@@ -67,12 +67,12 @@ class OpportunityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCustomerSaleRequest $request)
+    public function store(StoreCustomerOpportunityRequest $request)
     {
         // dd($request->all());
 
         // p(lastSql());exit;
-        $getInsertedId = $this->sale->create($request);
+        $getInsertedId = $this->opportunity->create($request);
         // p(lastSql());exit;
         /*if(!$getInsertedId){
         // dd('hehe sb');
@@ -94,7 +94,7 @@ class OpportunityController extends Controller
     public function edit($id)
     {
 
-        $carCustomer_info = $this->sale->find($id);
+        $carCustomer_info = $this->opportunity->find($id);
         // dd($carCustomer_info);
         return view('admin.carCustomer.edit', compact('carCustomer_info'));
     }
@@ -109,7 +109,7 @@ class OpportunityController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-        $this->sale->update($request, $id);
+        $this->opportunity->update($request, $id);
         return redirect()->route('admin.carCustomer.index')->withInput();
     }
 
@@ -122,7 +122,7 @@ class OpportunityController extends Controller
     public function show($id)
     {
 
-        $carCustomer = $this->sale->find($id);
+        $carCustomer = $this->opportunity->find($id);
 
         return view('admin.carCustomer.show', compact('carCustomer'));
     }
@@ -133,24 +133,24 @@ class OpportunityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function fenfa(Request $request)
+    public function assign(Request $request)
     {
         // dd($request->all());
 
         $id         = $request->fenfa_info_id;
         $fenfa_shop = $request->fenfa_shop;
 
-        $carCustomer = $this->sale->fenfa($id, $fenfa_shop);
+        $carCustomer = $this->opportunity->fenfa($id, $fenfa_shop);
 
         return redirect()->route('admin.carCustomer.index')->withInput();
     }
 
     /**
-     * 修改报名状态
+     * 删除
      *
      * @return \Illuminate\Http\Response
      */
-    public function changeStatus(Request $request)
+    public function destroy(Request $request)
     {
         /*if($request->ajax()){
         echo "zhen de shi AJAX";
@@ -159,16 +159,17 @@ class OpportunityController extends Controller
         p($request->input('status'));
         p($request->method());exit;*/
 
-        $sale = $this->sale->find($request->id);
+        $opportunity = $this->opportunity->find($request->id);
 
-        // $sale->status = $request->input('status');
-        $sale->status = '0';
+        // $opportunity->status = $request->input('status');
+        $opportunity->status = '0';
 
-        $sale->save();
+        $opportunity->save();
 
         return response()->json(array(
             'status' => 1,
             'msg'    => '修改成功',
         ));
     }
+
 }
