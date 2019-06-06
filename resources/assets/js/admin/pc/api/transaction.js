@@ -7,7 +7,7 @@ let token = getToken()
 export function getTransactionList(query, token = getToken()) {
     return request({
         // url: '/user/list',
-        url: ROAST_CONFIG.API_URL + '/index',
+        url: ROAST_CONFIG.API_URL + '/transactionList',
         method: 'get',
         params: { token, query, page: query.page }
     })
@@ -15,7 +15,7 @@ export function getTransactionList(query, token = getToken()) {
 
 export function getTransactionInfo(data, token = getToken()) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/show/' + data.id,
+        url: ROAST_CONFIG.API_URL + '/transaction/' + data.id,
         method: 'get',
         params: { token },
     })
@@ -24,7 +24,7 @@ export function getTransactionInfo(data, token = getToken()) {
 
 export function transactionAdd(data, token = getToken()) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/store',
+        url: ROAST_CONFIG.API_URL + '/transaction',
         method: 'post',
         params: { token },
         data
@@ -34,7 +34,7 @@ export function transactionAdd(data, token = getToken()) {
 
 export function transactionUpdate(data) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/update/' + data.ID,
+        url: ROAST_CONFIG.API_URL + '/transaction/' + data.ID,
         method: 'put',
         params: { token },
         data
@@ -45,7 +45,7 @@ export function transactionUpdate(data) {
 
 export function deleteOportunity(data, token = getToken()) {
   return request({
-    url: ROAST_CONFIG.API_URL + '/destroy/' + data.id,
+    url: ROAST_CONFIG.API_URL + '/transaction/' + data.id,
     method: 'delete',
     params: {token},
     data

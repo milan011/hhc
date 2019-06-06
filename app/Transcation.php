@@ -21,7 +21,14 @@ class Transcation extends Model
      * 定义可批量赋值字段
      * @var array
      */
-    protected $fillable = ['chance_id', 'deal_price', 'earnest', 'first_pay', 'last_pay', 'done_time', 'commission', 'commission_infact', 'commission_remark', 'violate', 'sale_card', 'trade_status', 'user_id', 'shop_id', 'partner_shop', 'partner_id'];
+    protected $fillable = ['CarId', 'BuyId', 'SaleDate', 'SaledPrice', 'SaleCommission', 'LoanCommission', 'OtherCommission', 'CarCost', 'RepairCost', 'Shop_Id', 'Create_Id', 'Status'];
+
+    /**
+     * 表明模型是否应该被打上时间戳
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -45,7 +52,7 @@ class Transcation extends Model
 
                 $query = $query->where(function ($query) use ($user_shop_id) {
 
-                    $query = $query->where('shop_id', $user_shop_id);
+                    $query = $query->where('Shop_Id', $user_shop_id);
                     $query = $query->orWhere('partner_shop', $user_shop_id);
                 });
 
@@ -54,7 +61,7 @@ class Transcation extends Model
                 //店员
                 $query = $query->where(function ($query) use ($user_id) {
 
-                    $query = $query->where('user_id', $user_id);
+                    $query = $query->where('Create_Id', $user_id);
                     $query = $query->orWhere('partner_id', $user_id);
                 });
                 // $query = $query->where('user_id', Auth::id());
@@ -63,10 +70,10 @@ class Transcation extends Model
 
         if ($requestData['participate']) {
             //用户参与的销售机会
-            $query = $query->where('user_id', '!=', $user_id);
+            $query = $query->where('Create_Id', '!=', $user_id);
         } else {
             //用户发起的销售机会
-            $query = $query->where('user_id', $user_id);
+            $query = $query->where('Create_Id', $user_id);
         }
 
         if (!empty($requestData['end_date'])) {
@@ -77,35 +84,42 @@ class Transcation extends Model
             $query = $query->where('created_at', '>=', $requestData['begin_date']);
         }
 
-        if (isset($requestData['trade_status']) && $requestData['trade_status'] != '') {
+        if (isset($requestData['status']) && $requestData['status'] != '') {
 
-            $query = $query->where('trade_status', $requestData['trade_status']);
+            $query = $query->where('status', $requestData['status']);
         } else {
 
-            $query = $query->whereIn('trade_status', ['1', '2', '3', '4', '5']);
+            $query = $query->whereIn('status', ['1', '2', '3', '4', '5']);
         }
 
         return $query;
     }
 
-    // 定义Transcation表与Chance表一对多关系
-    public function belongsToChance()
+    // 定义Transcation表与Car表一对多关系
+    public function belongsToCar()
     {
 
-        return $this->belongsTo('App\Chance', 'chance_id', 'id');
+        return $this->belongsTo('App\Cars', 'CarId', 'ID');
+    }
+
+    // 定义Transcation表与Want表一对多关系
+    public function belongsToWant()
+    {
+
+        return $this->belongsTo('App\Want', 'BuyId', 'id');
     }
 
     // 定义Transcation表与User表一对多关系
     public function belongsToUser()
     {
 
-        return $this->belongsTo('App\User', 'user_id', 'id');
+        return $this->belongsTo('App\User', 'Create_Id', 'id');
     }
 
     // 定义Transcation表与Shop表一对多关系
     public function belongsToShop()
     {
 
-        return $this->belongsTo('App\Shop', 'shop_id', 'id');
+        return $this->belongsTo('App\Shop', 'Shop_Id', 'id');
     }
 }

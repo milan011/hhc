@@ -76,7 +76,7 @@ Route::group([
     //Customer
     Route::get('customerList', 'CustomerController@index'); //客户列表
     Route::get('getCustomerInfo/{id}', 'CustomerController@show'); //客户详情
-    Route::post('customerInfoAdd', 'CustomerController@store'); //客户信息添加
+    Route::post('customerAdd', 'CustomerController@store'); //客户信息添加
     Route::put('customerUpdate/{id}', 'CustomerController@update'); //客户信息修改
 
     //Shop
@@ -92,15 +92,15 @@ Route::group([
     Route::post('opportunity', 'OpportunityController@store');
     Route::get('getOpportunity/{id}', 'OpportunityController@show');
     Route::put('opportunity/{id}', 'OpportunityController@update');
-    Route::post('opportunity/{id}', 'OpportunityController@assign');
+    Route::post('opportunityAssign/{id}', 'OpportunityController@assign');
     Route::delete('opportunity/{id}', 'OpportunityController@destroy');
 
     //Transaction
-    Route::get('transactionList', 'TransactionController@index');
-    Route::post('transaction', 'TransactionController@store');
-    Route::get('getTransaction/{id}', 'TransactionController@show');
-    Route::put('transaction/{id}', 'TransactionController@update');
-    Route::delete('transaction/{id}', 'TransactionController@destroy');
+    Route::get('transactionList', 'TranscationController@index');
+    Route::post('transaction', 'TranscationController@store');
+    Route::get('getTransaction/{id}', 'TranscationController@show');
+    Route::put('transaction/{id}', 'TranscationController@update');
+    Route::delete('transaction/{id}', 'TranscationController@destroy');
 
     //Loan
     Route::get('loanList', 'LoanController@index');

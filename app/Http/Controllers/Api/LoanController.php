@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\Loan\StoreLoanRequest;
 use App\Http\Requests\Loan\UpdateLoanRequest;
+use App\Http\Resources\Loan\LoanResource;
+// use App\Repositories\Brand\BrandRepositoryInterface;
 use App\Image;
-use App\Repositories\Brand\BrandRepositoryInterface;
 use App\Repositories\Car\CarRepositoryInterface;
 use App\Repositories\Loan\LoanRepositoryInterface;
 use App\Repositories\Shop\ShopRepositoryInterface;
@@ -19,20 +20,20 @@ use Illuminate\Http\Request;
 
 class LoanController extends Controller
 {
-    protected $brands;
+    // protected $brands;
     protected $shop;
     protected $loan;
 
     public function __construct(
 
-        BrandRepositoryInterface $brands,
+        // BrandRepositoryInterface $brands,
         ShopRepositoryInterface $shop,
         LoanRepositoryInterface $loan
     ) {
 
-        $this->brands = $brands;
-        $this->shop   = $shop;
-        $this->loan   = $loan;
+        // $this->brands = $brands;
+        $this->shop = $shop;
+        $this->loan = $loan;
 
         // $this->middleware('brand.create', ['only' => ['create']]);
     }
@@ -45,28 +46,28 @@ class LoanController extends Controller
     public function index(Request $request)
     {
         // dd($request->method());
-        $all_top_brands = $this->brands->getChildBrand(0);
+        // $all_top_brands = $this->brands->getChildBrand(0);
         //$request['car_status']   = '1';
 
         // dd($request->all());
-        if ($request->method() == 'POST') {
-            //初始搜索条件
-            $select_conditions = $request->all();
-            // dd($request->all());
+        /*if ($request->method() == 'POST') {
+        //初始搜索条件
+        $select_conditions = $request->all();
+        // dd($request->all());
         } else {
-            $select_conditions['loan_status'] = '1';
-        }
+        $select_conditions['loan_status'] = '1';
+        }*/
 
         // dd($select_conditions);
 
         $loans = $this->loan->getAllLoans($request);
         /*dd(lastSql());
         dd($loans);*/
-        $shops = $this->shop->getShopsInProvence('10');
+        // $shops = $this->shop->getShopsInProvence('10');
 
         $loan_status_current = '1';
 
-        return view('admin.loan.index', compact('loans', 'loan_status_current', 'all_top_brands', 'select_conditions', 'shops'));
+        return new LoanResource($loans);
     }
 
     /**

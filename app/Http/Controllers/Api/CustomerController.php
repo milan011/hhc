@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Http\Resources\Customer\CustomerResource;
 use App\Repositories\Car\CarRepositoryInterface;
 use App\Repositories\Customer\CustomerRepositoryInterface;
 use App\Repositories\Want\WantRepositoryInterface;
@@ -49,7 +50,7 @@ class CustomerController extends Controller
 
         // dd($customers[0]->belongsToUser->nick_name);
 
-        return view('admin.customer.index', compact('customers', 'select_conditions'));
+        return new CustomerResource($customers);
     }
 
     /**
@@ -64,24 +65,13 @@ class CustomerController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreCustomerRequest $customerRequest)
-    {
-        p($customerRequest->all());exit;
-    }
-
-    /**
-     * Store a newly created resource in storage.
      * ajax存储客户
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function ajaxStore(StoreCustomerRequest $customerRequest)
+    public function store(Request $customerRequest)
     {
-        // dd($customerRequest->all());exit;
+        // dd($customerRequest->all());
 
         $is_repeat = $this->customer->isRepeat($customerRequest->telephone, $customerRequest->customer_name);
         // p(LastSql());exit;
@@ -96,7 +86,13 @@ class CustomerController extends Controller
             $customer = $this->customer->create($customerRequest);
         }
         // p($customer);exit;
-        return response()->json($customer);
+        if ($customer) {
+            //添加成功
+            return $this->baseSucceed($Data = $customer, $Message = '添加客户成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**

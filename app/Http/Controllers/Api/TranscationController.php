@@ -7,9 +7,8 @@ use App\Http\Requests;
 use App\Http\Requests\Transcation\CompleteTranscationRequest;
 use App\Http\Requests\Transcation\StoreTranscationRequest;
 use App\Http\Requests\Transcation\UpdateTranscationRequest;
+use App\Http\Resources\Transcation\TranscationResource;
 use App\Repositories\Car\CarRepositoryInterface;
-use App\Repositories\Chance\ChanceRepositoryInterface;
-use App\Repositories\Plan\PlanRepositoryInterface;
 use App\Repositories\Transcation\TranscationRepositoryInterface;
 use App\Repositories\Want\WantRepositoryInterface;
 use Illuminate\Http\Request;
@@ -18,22 +17,21 @@ use Session;
 class TranscationController extends Controller
 {
     protected $transcation;
-    protected $plan;
+
     protected $car;
     protected $want;
-    protected $chance;
 
     public function __construct(
-        PlanRepositoryInterface $plan,
+
         CarRepositoryInterface $car,
         WantRepositoryInterface $want,
-        ChanceRepositoryInterface $chance,
+
         TranscationRepositoryInterface $transcation
     ) {
-        $this->plan        = $plan;
-        $this->car         = $car;
-        $this->want        = $want;
-        $this->chance      = $chance;
+
+        $this->car  = $car;
+        $this->want = $want;
+
         $this->transcation = $transcation;
         // $this->middleware('brand.create', ['only' => ['create']]);
     }
@@ -46,14 +44,14 @@ class TranscationController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-        $request['participate'] = true;
+        $request['participate'] = false;
         $transcations           = $this->transcation->getAllTranscations($request);
         $select_conditions      = $request->all();
-        /*p(lastSql());
+        /*dd(lastSql());
         dd($transcations);
         dd($transcation[0]->belongsToChance);*/
 
-        return view('admin.transcation.index', compact('transcations', 'select_conditions'));
+        return new TranscationResource($transcations);
     }
 
     /**
@@ -97,7 +95,7 @@ class TranscationController extends Controller
         $plan_info   = $this->plan->find($plan_id);
 
         // dd($chance_info);
-        /*dd($car_info->belongsToCustomer);
+        /*dd($car_info->belongsToTranscation);
         dd($want_info);*/
         return view('admin.transcation.create', compact(
             'chance_info',
@@ -113,16 +111,24 @@ class TranscationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTranscationRequest $transcationRequest)
+    public function store(Request $transcationRequest)
     {
         // dd($transcationRequest->all());
-        $getInsertedId = $this->transcation->create($transcationRequest);
+        $trans = $this->transcation->create($transcationRequest);
+        $trans->belongsToUser;
+        $trans->belongsToShop;
         // p(lastSql());exit;
         /*if(!$getInsertedId){
         // dd('hehe sb');
         return redirect()->route('admin.transcation.edit', ['transcation'=>'1'])->withInput();
         }*/
-        return redirect()->route('admin.transcation.self')->withInput();
+        if ($trans) {
+            //添加成功
+            return $this->baseSucceed($Data = $trans, $Message = '添加交易成功');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**
@@ -167,7 +173,7 @@ class TranscationController extends Controller
 
         // dd($chance_info);
         /*dd($want_info->creater_id);
-        dd($car_info->belongsToCustomer->customer_telephone);*/
+        dd($car_info->belongsToTranscation->customer_telephone);*/
         // dd($want_info);
         // dd($transcations);
 

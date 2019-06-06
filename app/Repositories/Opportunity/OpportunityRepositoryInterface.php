@@ -6,7 +6,7 @@ interface OpportunityRepositoryInterface
 
     public function find($id);
 
-    public function getAllCustomersCars($request);
+    public function getAllOpportunitys($request);
 
     public function create($requestData);
 

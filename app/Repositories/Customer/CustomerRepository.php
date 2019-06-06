@@ -33,7 +33,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         $query = $query->addCondition($request->all()); //根据条件组合语句
 
-        return $query->select($this->select_columns)
+        return $query->with('belongsToUser', 'belongsToShop')->select($this->select_columns)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
@@ -68,33 +68,28 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function create($requestData)
     {
 
-        if ($this->isRepeat($requestData->telephone, $requestData->customer_name)) {
-            //手机号码重复，已存在该手机注册用户，返回用户实例
-            p('chongfu');exit;
-            $customer = $this->isRepeat($requestData->telephone, $requestData->customer_name);
-        } else {
-            // p('buchongfu');exit;
-            // 注册用户并返回实例
-            $requestData['creater_id'] = Auth::id();
-            $requestData['shop_id']    = Auth::user()->shop_id;
-            $requestData['name']       = $requestData['customer_name'];
-            $requestData['password']   = bcrypt('123465');
+        // p('buchongfu');exit;
+        // 注册用户并返回实例
+        $requestData['creater_id'] = Auth::id();
+        $requestData['shop_id']    = Auth::user()->shop_id;
+        $requestData['name']       = $requestData['customer_name'];
+        $requestData['password']   = bcrypt('123465');
 
-            // $is_insurance = !empty($requestData['is_insurance']) ? true : false ;
+        // $is_insurance = !empty($requestData['is_insurance']) ? true : false ;
 
-            unset($requestData['_token']);
-            unset($requestData['customer_name']);
-            unset($requestData['is_insurance']);
-            // p($requestData->all());exit;
-            $customer = new Customer();
-            $input    = array_replace($requestData->all());
-            $customer->fill($input);
+        unset($requestData['_token']);
+        unset($requestData['customer_name']);
+        unset($requestData['is_insurance']);
+        // p($requestData->all());exit;
+        $customer = new Customer();
+        $input    = array_replace($requestData->all());
+        $customer->fill($input);
 
-            // p($customer);exit;
-            $customer = $customer->create($input);
-            // p(lastSql());exit;
-            // p($customer);exit;
-        }
+        // p($customer);exit;
+        $customer = $customer->create($input);
+        // p(lastSql());exit;
+        // p($customer);exit;
+
         // p($customer);exit;
         return $customer;
     }

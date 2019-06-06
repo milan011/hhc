@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories\Opportunity;
 
-use App\CustomerCar;
+use App\Opportunity;
 use Auth;
 use Carbon;
 use Datatables;
@@ -19,46 +19,46 @@ class OpportunityRepository implements OpportunityRepositoryInterface
     // 根据ID获得客户车源信息信息
     public function find($id)
     {
-        return CustomerCar::findOrFail($id);
+        return Opportunity::findOrFail($id);
     }
 
     // 获得客户车源信息列表
-    public function getAllCustomersCars($request)
+    public function getAllOpportunitys($request)
     {
-        $query = new CustomerCar(); // 返回的是一个CustomerCar实例,两种方法均可
+        $query = new Opportunity(); // 返回的是一个Opportunity实例,两种方法均可
 
         $query = $query->addCondition($request->all()); //根据条件组合语句
-        $query = $query->where('mobile', '!=', '');
+        $query = $query->with('belongsToShop')->where('mobile', '!=', '');
         $query = $query->where('status', '1');
         return $query->orderBy('created_at', 'desc')
             ->paginate(12);
 
-        // return CustomerCar::paginate(10);
+        // return Opportunity::paginate(10);
     }
 
     // 创建客户车源信息
     public function create($requestData)
     {
         // 添加信息
-        $customerCar = new CustomerCar();
+        $opportunity = new Opportunity();
 
-        $requestData['category_id'] = empty($requestData->type) ? '' : $requestData->type;
-        $requestData['brand_id']    = empty($requestData->brand) ? '' : $requestData->brand;
-        $requestData['car_factory'] = empty($requestData->company) ? '' : $requestData->company;
+        //$requestData['category_id'] = empty($requestData->type) ? '' : $requestData->type;
+        //$requestData['brand_id']    = empty($requestData->brand) ? '' : $requestData->brand;
+        //$requestData['car_factory'] = empty($requestData->company) ? '' : $requestData->company;
 
         // dd($requestData->all());
         $input = array_replace($requestData->all());
-        $customerCar->fill($input);
-        $customerCar = $customerCar->create($input);
+        $opportunity->fill($input);
+        $opportunity = $opportunity->create($input);
 
-        return $customerCar;
+        return $opportunity;
     }
 
     // 修改报名
     public function update($requestData, $id)
     {
 
-        $carCustomer = CustomerCar::findorFail($id);
+        $carCustomer = Opportunity::findorFail($id);
         $input       = array_replace($requestData->all());
         $carCustomer->fill($input)->save();
         // dd($carCustomer->toJson());
@@ -70,7 +70,7 @@ class OpportunityRepository implements OpportunityRepositoryInterface
     public function fenfa($id, $fenfa_shop)
     {
 
-        $carCustomer = CustomerCar::findorFail($id);
+        $carCustomer = Opportunity::findorFail($id);
 
         $carCustomer->ff_shop  = $fenfa_shop;
         $carCustomer->is_fenfa = '1';

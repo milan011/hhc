@@ -7,7 +7,7 @@ let token = getToken()
 export function getLoanList(query, token = getToken()) {
     return request({
         // url: '/user/list',
-        url: ROAST_CONFIG.API_URL + '/index',
+        url: ROAST_CONFIG.API_URL + '/loanList',
         method: 'get',
         params: { token, query, page: query.page }
     })
@@ -15,7 +15,7 @@ export function getLoanList(query, token = getToken()) {
 
 export function getLoanInfo(data, token = getToken()) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/show/' + data.id,
+        url: ROAST_CONFIG.API_URL + '/getLoan/' + data.id,
         method: 'get',
         params: { token },
     })
@@ -24,7 +24,7 @@ export function getLoanInfo(data, token = getToken()) {
 
 export function loanAdd(data, token = getToken()) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/store',
+        url: ROAST_CONFIG.API_URL + '/loan',
         method: 'post',
         params: { token },
         data
@@ -34,7 +34,7 @@ export function loanAdd(data, token = getToken()) {
 
 export function loanUpdate(data) {
     return request({
-        url: ROAST_CONFIG.API_URL + '/update/' + data.ID,
+        url: ROAST_CONFIG.API_URL + '/loan/' + data.ID,
         method: 'put',
         params: { token },
         data
@@ -43,9 +43,9 @@ export function loanUpdate(data) {
 
 
 
-export function deleteOportunity(data, token = getToken()) {
+export function deleteLoan(data, token = getToken()) {
   return request({
-    url: ROAST_CONFIG.API_URL + '/destroy/' + data.id,
+    url: ROAST_CONFIG.API_URL + '/loan/' + data.id,
     method: 'delete',
     params: {token},
     data

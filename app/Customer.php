@@ -131,6 +131,6 @@ class Customer extends Model
     public function belongsToShop()
     {
 
-        return $this->belongsTo('App\Shop', 'shop_id', 'id')->select('id', 'city_id', 'name AS shop_name', 'address as shop_address', 'telephone as shop_tele');
+        return $this->belongsTo('App\Shop', 'shop_id', 'id');
     }
 }

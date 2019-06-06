@@ -6,6 +6,7 @@ use App\Area;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 // use App\Http\Requests\CustomerOpportunity\StoreCustomerOpportunityRequest;
+use App\Http\Resources\Opportunity\OpportunityResource;
 use App\Image;
 use App\Repositories\Opportunity\OpportunityRepositoryInterface;
 use App\Shop;
@@ -16,15 +17,12 @@ use Illuminate\Http\Request;
 
 class OpportunityController extends Controller
 {
-    protected $customerCar;
+    protected $opportunity;
 
     public function __construct(
 
-        OpportunityRepositoryInterface $customerCar,
         OpportunityRepositoryInterface $opportunity
     ) {
-
-        $this->customerCar = $customerCar;
         $this->opportunity = $opportunity;
 
         // $this->middleware('brand.create', ['only' => ['create']]);
@@ -38,16 +36,15 @@ class OpportunityController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-        $all_customer_cars = $this->customerCar->getAllCustomersCars($request);
-        $select_conditions = $request->all();
+        $opportunitys = $this->opportunity->getAllOpportunitys($request);
+        // $select_conditions = $request->all();
         // dd($all_customer_cars[0]);
         // dd($all_customer_cars[0]);
-        $shop_fenfa = Shop::select(['id', 'name'])
-            ->where('status', '1')
-            ->where('is_show', '1')
-            ->get();
-
-        return view('admin.carCustomer.index', compact('all_customer_cars', 'select_conditions', 'shop_fenfa'));
+        /*$shop_fenfa = Shop::select(['id', 'name'])
+        ->where('status', '1')
+        ->where('is_show', '1')
+        ->get();*/
+        return new OpportunityResource($opportunitys);
     }
 
     /**
@@ -67,12 +64,12 @@ class OpportunityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCustomerOpportunityRequest $request)
+    public function store(Request $request)
     {
         // dd($request->all());
 
         // p(lastSql());exit;
-        $getInsertedId = $this->opportunity->create($request);
+        $opp = $this->opportunity->create($request);
         // p(lastSql());exit;
         /*if(!$getInsertedId){
         // dd('hehe sb');
@@ -82,7 +79,13 @@ class OpportunityController extends Controller
         'status'      => 200,
         'msg'         => '您的信息已记录,销售顾问会尽快跟您联系',
         ));*/
-        return redirect()->route('admin.carCustomer.index')->withInput();
+        if ($opp) {
+            //添加成功
+            return $this->baseSucceed($Data = $opp, $Message = '您的信息已记录,销售顾问会尽快跟您联系');
+        } else {
+            //添加失败
+            return $this->baseFailed($Message = '内部错误');
+        }
     }
 
     /**

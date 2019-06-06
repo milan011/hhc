@@ -20,7 +20,7 @@ use Session;
 class TranscationRepository implements TranscationRepositoryInterface
 {
     //默认查询数据
-    protected $select_columns = ['id', 'chance_id', 'deal_price', 'earnest', 'first_pay', 'last_pay', 'done_time', 'commission', 'commission_infact', 'commission_remark', 'violate', 'sale_card', 'trade_status', 'user_id', 'created_at', 'shop_id', 'partner_shop', 'partner_id'];
+    protected $select_columns = ['CarId', 'BuyId', 'SaleDate', 'SaledPrice', 'SaleCommission', 'LoanCommission', 'OtherCommission', 'CarCost', 'RepairCost', 'Shop_Id', 'Create_Id', 'Status'];
 
     // 订车表列名称-注释对应
     protected $columns_annotate = [
@@ -52,70 +52,93 @@ class TranscationRepository implements TranscationRepositoryInterface
 
         // $query = $query->chacneLaunch($request->Transaction_launch);
         // $query = $query->where('trade_status', '1');
-        return $query->select($this->select_columns)
-            ->orderBy('created_at', 'DESC')
+        return $query->with('belongsToCar', 'belongsToWant')->select($this->select_columns)
+            ->orderBy('SaleDate', 'DESC')
             ->paginate(10);
     }
 
     // 创建交易
     public function create($requestData)
     {
-        // dd($requestData->all());
-        if ($this->isRepeat($requestData->chance_id)) {
+        DB::beginTransaction();
+        try {
+            $requestData['Create_Id'] = Auth::id();
+            $requestData['Shop_Id']   = '38';
 
+            $transcation = new Transcation();
+            $input       = array_replace($requestData->all());
+            // dd($input);
+            $transcation->fill($input);
+            $transcation = $transcation->create($input);
+
+            //$car->save();
+            //$want->save();
+            //$chance->save();
+            //$plan->save();
+
+            return $transcation;
+        } catch (\Exception $e) {
+            throw $e;
+            DB::rollBack();
             return false;
-        } else {
-            DB::transaction(function () use ($requestData) {
-
-                $plan   = Plan::findOrFail($requestData->plan_id); //约车对象
-                $chance = Chance::findOrFail($requestData->chance_id);
-                $car    = Cars::findOrFail($requestData->car_id);
-                $want   = Want::findOrFail($requestData->want_id);
-
-                $car->car_status   = '4';
-                $want->want_status = '4';
-                $chance->status    = '5';
-                $plan->status      = '2';
-                $plan->plan_del    = '1';
-                $plan->plan_remark = $requestData->plan_remark;
-
-                //获得交易参与者ID及门店ID
-                $partner = getPartnerInfo($chance->car_creater, $chance->want_creater, $chance->creater);
-                // dd($partner);
-                if ($partner['self']) {
-                    //车源、求购均来自本用户
-                    $requestData['partner_id']   = Auth::id();
-                    $requestData['partner_shop'] = $chance->shop_id;
-                } else {
-
-                    if ($partner['want']) {
-                        // 对方提供求购信息
-                        $requestData['partner_id']   = $partner['user_id'];
-                        $requestData['partner_shop'] = $want->shop_id;
-                    } else {
-                        // 对方提供车源信息
-                        $requestData['partner_id']   = $partner['user_id'];
-                        $requestData['partner_shop'] = $car->shop_id;
-                    }
-                }
-
-                $requestData['user_id'] = Auth::id();
-                $requestData['shop_id'] = $chance->shop_id;
-
-                $transcation = new Transcation();
-                $input       = array_replace($requestData->all());
-                // dd($input);
-                $transcation->fill($input);
-                $transcation = $transcation->create($input);
-
-                $car->save();
-                $want->save();
-                $chance->save();
-                $plan->save();
-
-                return $transcation;
-            });
         }
+
+        // dd($requestData->all());
+        /*if ($this->isRepeat($requestData->chance_id)) {
+
+        return false;
+        } else {*/
+        // DB::transaction(function () use ($requestData) {
+
+        //$plan   = Plan::findOrFail($requestData->plan_id); //约车对象
+        //$chance = Chance::findOrFail($requestData->chance_id);
+        //$car    = Cars::findOrFail($requestData->car_id);
+        //$want   = Want::findOrFail($requestData->want_id);
+
+        //$car->car_status   = '4';
+        //$want->want_status = '4';
+        //$chance->status    = '5';
+        //$plan->status      = '2';
+        //$plan->plan_del    = '1';
+        //$plan->plan_remark = $requestData->plan_remark;
+
+        //获得交易参与者ID及门店ID
+        //$partner = getPartnerInfo($chance->car_creater, $chance->want_creater, $chance->creater);
+        // dd($partner);
+        /*if ($partner['self']) {
+        //车源、求购均来自本用户
+        $requestData['partner_id']   = Auth::id();
+        $requestData['partner_shop'] = $chance->shop_id;
+        } else {
+
+        if ($partner['want']) {
+        // 对方提供求购信息
+        $requestData['partner_id']   = $partner['user_id'];
+        $requestData['partner_shop'] = $want->shop_id;
+        } else {
+        // 对方提供车源信息
+        $requestData['partner_id']   = $partner['user_id'];
+        $requestData['partner_shop'] = $car->shop_id;
+        }
+        }*/
+
+        /* $requestData['Create_Id'] = Auth::id();
+        $requestData['Shop_Id']   = '38';
+
+        $transcation = new Transcation();
+        $input       = array_replace($requestData->all());
+        // dd($input);
+        $transcation->fill($input);
+        $transcation = $transcation->create($input);*/
+
+        //$car->save();
+        //$want->save();
+        //$chance->save();
+        //$plan->save();
+
+        /*return $transcation;
+        });*/
+        // }
     }
 
     // 交易修改

@@ -55,7 +55,7 @@
     </div>
 </template>
 <script>
-//import { getInfo } from '@/api/infoSelf'
+import { getCustomerList, customerAdd, getCustomerInfo, customerUpdate } from '@adminPc/api/customer'
 //import { parseTime } from '@/utils'
 //import  { infoSelfStatus, jituanStatus, oldBindStatus, collections_type }  from '@/config.js'
 import { TOKEN } from '@adminPc/tokenConfig.js'
@@ -63,30 +63,82 @@ export default {
     name: 'Customer',
     data() {
         return {
-
+            customerData: {
+                id: undefined,
+                customer_name: '', //客户姓名
+                telephone: '', //客户电话
+                shop_id: null, //所属门店
+            },
+            pageQuery: {
+                page: 1, //分页
+                is_self: false, //是否用户所属客户
+            },
+            listQuery: null,
         };
     },
     created() {
-
+        this.listQuery = Object.assign(this.pageQuery, this.customerData)
     },
     methods: {
         customerListCommit() {
-            alert('客户列表提交Json')
+            this.$emit("showJson", this.listQuery)
+            this.$emit("showDialog", true)
         },
         customerListReturn() {
-            alert('客户列表返回Json')
+            getCustomerList(this.listQuery).then(response => {
+                console.log(response.data)
+                // return false
+                const customerList = response.data
+
+                this.$emit("showJson", customerList)
+                this.$emit("showDialog", true)
+            })
         },
         customeraddCommit() {
-            alert('客户添加提交Json')
+            this.$emit("showJson", this.customerData)
+            this.$emit("showDialog", true)
         },
         customeraddReturn() {
-            alert('客户添加返回Json')
+            const data = {
+                id: undefined,
+                customer_name: '新客户', //客户姓名
+                telephone: '13984521452', //客户电话
+                shop_id: 31, //所属门店
+            }
+            customerAdd(data).then(response => {
+                console.log(response.data)
+                // return false
+                const customerList = response.data
+
+                this.$emit("showJson", customerList)
+                this.$emit("showDialog", true)
+            })
         },
         customerUpdateCommit() {
-            alert('客户修改提交Json')
+            const data = {
+                id: 201,
+                customer_name: '新客户22', //客户姓名
+                telephone: '13984521452', //客户电话
+                shop_id: 31, //所属门店
+            }
+            this.$emit("showJson", data)
+            this.$emit("showDialog", true)
         },
         customerUpdateReturn() {
-            alert('客户修改返回Json')
+            const data = {
+                id: 201,
+                customer_name: '新客户22', //客户姓名
+                telephone: '13984521452', //客户电话
+                shop_id: 31, //所属门店
+            }
+            customerUpdate(data).then(response => {
+                console.log(response.data)
+                // return false
+                const customerList = response.data
+
+                this.$emit("showJson", customerList)
+                this.$emit("showDialog", true)
+            })
         },
         customerShowCommit() {
             alert('客户详情提交Json')
