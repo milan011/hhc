@@ -78,6 +78,7 @@ class NoticeController extends Controller
     public function show($id)
     {
         $notice_info = $this->notice->find($id);
+        $notice_info->belongsToUser;
         // dd(lastSql());
         // dd($notice_info);exit;
         if ($notice_info) {
@@ -117,9 +118,10 @@ class NoticeController extends Controller
     {
         // dd($noticeRequest->all());
         $notice = $this->notice->update($noticeRequest, $id);
+        $notice->belongsToUser;
         if ($notice) {
             //添加成功
-            return $this->baseSucceed($Data = $notice, $Message = '添加公告成功');
+            return $this->baseSucceed($Data = $notice, $Message = '修改公告成功');
         } else {
             //添加失败
             return $this->baseFailed($Message = '内部错误');

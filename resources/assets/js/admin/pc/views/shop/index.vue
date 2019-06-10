@@ -172,7 +172,7 @@ export default {
     getShopList() {
       this.listLoading = true
       shopList(this.listQuery).then(response => {
-        this.list = response.data.data
+        this.list = response.data.Data.data
         this.total = response.data.total
         // console.log(this.list)
         // Just to simulate the time of the request
@@ -279,8 +279,8 @@ export default {
           //console.log(response.data.data);
           // console.log(this.temp)
           //return false
-            if(response.data.status){
-              let shopData = response.data.data
+            if(response.data.ResultType == 0 ){
+              let shopData = response.data.Data.data
 
               // shopData.is_food = shopData.is_food
               /*let newShop = {

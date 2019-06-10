@@ -24,7 +24,7 @@ class Notice extends Model
      * 定义可批量赋值字段
      * @var array
      */
-    protected $fillable = ['title', 'content', 'type', 'user_id', 'sort', 'is_top'];
+    protected $fillable = ['title', 'content', 'IsDelete', 'type', 'user_id', 'sort', 'is_top'];
 
     /**
      * The attributes excluded from the model's JSON form.

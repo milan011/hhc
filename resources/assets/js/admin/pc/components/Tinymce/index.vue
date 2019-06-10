@@ -54,6 +54,7 @@ export default {
           window.tinymce.get(this.tinymceId).setContent(val || ''))
       }
     }
+
   },
   mounted() {
     this.initTinymce()
@@ -95,7 +96,7 @@ export default {
           }
           _this.hasInit = true
           editor.on('NodeChange Change KeyUp SetContent', () => {
-            this.hasChange = true
+            this.hasChange = false
             this.$emit('input', editor.getContent())
           })
         },

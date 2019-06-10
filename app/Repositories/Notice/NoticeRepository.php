@@ -38,7 +38,7 @@ class NoticeRepository implements NoticeRepositoryInterface
 
     public function allNotices()
     {
-        return Notice::with('belongsToUser')
+        return Notice::with('belongsToUser')->where('IsDelete', '0')
             ->orderBy('id', 'DESC')
             ->paginate(10);
         // return Notice::with('belongsToUser')->orderBy('id', 'DESC')->paginate(10);
